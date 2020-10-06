@@ -1,0 +1,45 @@
+{
+  "subjects" : {
+    "-Lvqmm_b-h7Mc167aYUI" : {
+      "id" : "AAAAA-i-1di-w",
+      "name" : "Ciências",
+      "subcategory": {
+        "1": {
+          "name": "Física",
+          "questions" : [ {
+            "description" : "Pq o céu é azul",
+            "explanation" : "A explicação do professor sobre a questão",
+            "id" : "121ho31-i-1di-w",
+            "options" : [ {
+              "correct" : true,
+              "description" : "Pq Deus quis assim",
+              "order" : 0
+            }, {
+              "correct" : false,
+              "description" : "I don't know",
+              "order" : 1
+            } ]
+          } ]
+        }
+      }
+    },
+    "-Lvqmm_b-h7Mc167aYUII" : {
+      "id" : "AAAAA-i-1di-w",
+      "name" : "Direito",
+      "questions" : [ {
+        "description" : "Pq o céu é azul",
+        "explanation" : "A explicação do professor sobre a questão",
+        "id" : "121ho31-i-1di-w",
+        "options" : [ {
+          "correct" : true,
+          "description" : "Pq Deus quis assim",
+          "order" : 0
+        }, {
+          "correct" : false,
+          "description" : "I don't know",
+          "order" : 1
+        } ]
+      } ]
+    }
+  }
+}
