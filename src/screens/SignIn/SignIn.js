@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import { ActivityIndicator, Alert, Dimensions, Image } from 'react-native'
+import AsyncStorage from '@react-native-community/async-storage'
 import { Container, Button, Text, View } from 'native-base'
 import { Form } from '@unform/mobile'
 import { getErrorMessage } from '../../utils'
@@ -69,6 +70,8 @@ const SignIn = ({ isAuth, setIsAuth }) => {
     try {
       setLoading(true)
       await auth().signInWithEmailAndPassword(data.email, data.password)
+      await AsyncStorage.setItem('@background:marcosmoraes', '#353A3E')
+      await AsyncStorage.setItem('@background:marcosmoraestext', '#ffffff')
       setIsAuth(true)
       setEmail('')
       setPassword('')

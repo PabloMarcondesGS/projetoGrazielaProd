@@ -6,6 +6,7 @@ import { Actions } from 'react-native-router-flux'
 import { Container, Button, Text, View } from 'native-base'
 import { Form } from '@unform/mobile'
 import { getErrorMessage } from '../../utils'
+import AsyncStorage from '@react-native-community/async-storage'
 import styles from './styles'
 import { onIsAuth } from '../../store/actions/authorization'
 import Input from '../../components/Input'
@@ -29,10 +30,15 @@ const SignUp = ({ setIsAuth }) => {
         return
       }
       await auth().createUserWithEmailAndPassword(data.email, data.password)
+      await AsyncStorage.setItem('@background:marcosmoraes', '#353A3E')
+      await AsyncStorage.setItem('@background:marcosmoraestext', '#ffffff')
       setIsAuth(true)
       Actions.Home()
     } catch ({ code }) {
-      Alert.alert('Erro', getErrorMessage(code))
+      Alert.alert(
+        'Erro',
+        'Por favor, sua senha deve conter pelos menos 6 digitos'
+      )
     } finally {
       setTimeout(() => {
         setLoading(false)
