@@ -31,33 +31,33 @@ const Questions = ({ subjects, setSubjects, setIsAuth }) => {
     {
       id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
       title: 'First Item',
-      color: colorText
+      color: colorText,
     },
     {
       id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
       title: 'Second Item',
-      color: colorText
+      color: colorText,
     },
     {
       id: '58694a0f-3da1-471f-bd96-145571e29d72',
       title: 'Third Item',
-      color: colorText
+      color: colorText,
     },
     {
       id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28bc',
       title: 'First Item',
-      color: colorText
+      color: colorText,
     },
     {
       id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f64',
       title: 'Second Item',
-      color: colorText
+      color: colorText,
     },
     {
       id: '58694a0f-3da1-471f-bd96-145571e29d73',
       title: 'Third Item',
-      color: colorText
-    },
+      color: colorText,
+    }
   ]
 
   useEffect(() => {
@@ -95,13 +95,15 @@ const Questions = ({ subjects, setSubjects, setIsAuth }) => {
         </Left>
       </Header>
       <View style={styles.containerText}>
-        <FlatListStyled
-          colorText={colorText}
-          color={colorText}
-          data={DATA}
-          renderItem={Item}
-          keyExtractor={item => item.id}
-        />
+        <View style={{ flex: 1 }}>
+          <FlatListStyled
+            colorText={colorText}
+            color={colorText}
+            data={DATA}
+            renderItem={Item}
+            keyExtractor={item => item.id}
+          />
+        </View>
       </View>
     </View>
   )
@@ -111,7 +113,7 @@ const mapStateToProps = ({ subjects }) => ({ subjects })
 
 const mapDispatchToProps = dispatch => ({
   setSubjects: items => dispatch(onSubjects(items)),
-  setIsAuth: isAuth => dispatch(onIsAuth(isAuth)),
+  setIsAuth: isAuth => dispatch(onIsAuth(isAuth))
 })
 
 export default connect(

@@ -1,21 +1,30 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable react-native/no-inline-styles */
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
-import { Alert, BackHandler, ScrollView } from 'react-native'
+import { ScrollView } from 'react-native'
 import { Actions } from 'react-native-router-flux'
 import { database } from 'firebase'
 import { map } from 'lodash'
-import { View, Image } from 'react-native'
+import { View } from 'react-native'
+import Iconn from 'react-native-vector-icons/FontAwesome'
 import AsyncStorage from '@react-native-community/async-storage'
-import { Text, Header, Left, Button, Icon } from 'native-base'
+import { Text, Header, Left, Button } from 'native-base'
 
 import { onSubjects } from '../../store/actions/subjects'
 import { onIsAuth } from '../../store/actions/authorization'
 import styles, { ButtonStyled, ButtonStyledPrevNext } from './styles'
-import Iconn from 'react-native-vector-icons/FontAwesome'
 
-const Question = ({ subjects, setSubjects, setIsAuth }) => {
+import { shuffle } from '../../utils'
+const Question = ({ subject, setSubjects, setIsAuth }) => {
   const [back, setBack] = useState('#353A3E')
   const [colorText, setColorText] = useState('#353A3E')
+  const [questions, setQuestions] = useState([])
+  const [isSolved, setIsSolved] = useState(false)
+  const [question, setQuestion] = useState({})
+  const [corrects, setCorrects] = useState(0)
+  const [wrongs, setWrongs] = useState(0)
+  const [questionIndex, setQuestionIndex] = useState(0)
 
   const onLoad = () => {
     database()
@@ -25,6 +34,59 @@ const Question = ({ subjects, setSubjects, setIsAuth }) => {
         setSubjects(updatedSubjects)
       })
   }
+
+  const onSolveClick = option => {
+    setIsSolved(true)
+
+    if (option.correct) {
+      setCorrects(corrects + 1)
+    } else {
+      setWrongs(wrongs + 1)
+    }
+  }
+
+  const nextQuestion = () => {
+    const updatedQuestionIndex = questionIndex + 1
+    const newQuestion = questions[updatedQuestionIndex]
+
+    if (newQuestion) {
+      setIsSolved(false)
+      setQuestion(newQuestion)
+      setQuestionIndex(updatedQuestionIndex)
+    }
+  }
+
+  const prevQuestion = () => {
+    const updatedQuestionIndex = questionIndex - 1
+    const newQuestion = questions[updatedQuestionIndex]
+
+    if (newQuestion) {
+      setIsSolved(false)
+      setQuestion(newQuestion)
+      setQuestionIndex(updatedQuestionIndex)
+    }
+  }
+
+  const returnColor = (option) => {
+    if (isSolved && option.correct){
+      return 'green'
+    } else if (isSolved && !option.correct){
+      return 'red'
+    } else {
+      return colorText
+    }
+  }
+
+  useEffect(() => {
+    const updatedQuestions = shuffle(map(subject.questions, x => x))
+    // updatedQuestions.map(sub => console.log(sub))
+    setQuestions(updatedQuestions)
+    setQuestion({ ...updatedQuestions[0], solved: false })
+    setQuestionIndex(0)
+    setCorrects(0)
+    setWrongs(0)
+    setIsSolved(false)
+  }, [subject])
 
   useEffect(() => {
     async function getData() {
@@ -48,29 +110,6 @@ const Question = ({ subjects, setSubjects, setIsAuth }) => {
 
   useEffect(onLoad, [])
 
-  const data = [
-    {
-      name: 'Rodrigo',
-      id: 1
-    },
-    {
-      name: 'Rodrigo',
-      id: 2
-    },
-    {
-      name: 'Rodrigo',
-      id: 3
-    },
-    {
-      name: 'Rodrigo',
-      id: 4
-    },
-    {
-      name: 'Rodrigo',
-      id: 5
-    },
-  ]
-
   return (
     <View style={{ ...styles.viewmenu, backgroundColor: back }}>
       <Header style={{ backgroundColor: back }}>
@@ -79,7 +118,7 @@ const Question = ({ subjects, setSubjects, setIsAuth }) => {
             <Iconn name="arrow-left" color={colorText} size={17} />
           </Button>
           <Text style={{ color: colorText, fontSize: 17, marginLeft: 10 }}>
-            Simulado 01
+            {subject ? subject.name : ''}
           </Text>
         </Left>
       </Header>
@@ -107,17 +146,17 @@ const Question = ({ subjects, setSubjects, setIsAuth }) => {
                 style={{
                   color: colorText,
                   flexBasis: '100%',
-                  flexWrap: 'wrap'
+                  flexWrap: 'wrap',
                 }}>
-                Questão 01 de 38
+                Questão {questionIndex + 1} de {questions.length}
               </Text>
               <Text
                 style={{
                   color: colorText,
                   flexBasis: '100%',
-                  flexWrap: 'wrap'
+                  flexWrap: 'wrap',
                 }}>
-                Certas: 0, Erradas: 0
+                Certas: {corrects}, Erradas: {wrongs}
               </Text>
             </View>
           </View>
@@ -132,60 +171,90 @@ const Question = ({ subjects, setSubjects, setIsAuth }) => {
               borderRadius: 10,
             }}>
             <ScrollView style={{ flex: 1 }}>
-              <Text
-                style={{
-                  color: colorText,
-                  textAlign: 'justify',
-                  fontSize: 17,
-                  flexWrap: 'wrap',
-                }}>
-                {'Questão 01?'}
-              </Text>
-              <ButtonStyled>
-                <Text
-                  style={{
-                    width: '100%',
-                    textAlign: 'center',
-                    color: colorText,
-                  }}>
-                  CERTO
-                </Text>
-              </ButtonStyled>
-              <ButtonStyled>
-                <Text
-                  style={{
-                    width: '100%',
-                    textAlign: 'center',
-                    color: colorText,
-                  }}>
-                  ERRADO
-                </Text>
-              </ButtonStyled>
-              <ButtonStyled>
-                <Text
-                  style={{
-                    width: '100%',
-                    textAlign: 'center',
-                    color: colorText,
-                    flexWrap: 'wrap',
-                  }}>
-                  Resposta comentada do professor
-                </Text>
-              </ButtonStyled>
-              <View
-                style={{
-                  marginTop: 36,
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  width: '100%'
-                }}>
-                <ButtonStyledPrevNext>
-                  <Iconn name="arrow-left" color={colorText} size={17} />
-                </ButtonStyledPrevNext>
-                <ButtonStyledPrevNext>
-                  <Iconn name="arrow-right" color={colorText} size={17} />
-                </ButtonStyledPrevNext>
-              </View>
+              {question ? (
+                <View>
+                  <Text
+                    style={{
+                      color: colorText,
+                      textAlign: 'justify',
+                      fontSize: 20,
+                      flexWrap: 'wrap',
+                    }}>
+                    {question.description}
+                  </Text>
+                  <Text style={{marginTop: 24, fontSize: 13}}>Verde para a opção correta</Text>
+                  {question.options && question.options.map(option => (
+                    <ButtonStyled
+                      onPress={() => onSolveClick(option)}
+                      style={{backgroundColor: returnColor(option), color: 'white' }}
+                      disabled={isSolved}
+                    >
+                      <Text
+                        style={{
+                          width: '100%',
+                          textAlign: 'center',
+                          color: 'white',
+                        }}>
+                        {option.description}
+                      </Text>
+                    </ButtonStyled>
+                  ))}
+
+                  {/* <ButtonStyled>
+                    <Text
+                      style={{
+                        width: '100%',
+                        textAlign: 'center',
+                        color: colorText,
+                      }}>
+                      ERRADO
+                    </Text>
+                  </ButtonStyled> */}
+                  {isSolved ? (
+                    <>
+                    <Text style={{marginTop: 24, fontSize: 17}}>Explicação:</Text>
+                    <ButtonStyled>
+                      <Text
+                        style={{
+                          width: '100%',
+                          textAlign: 'center',
+                          color: colorText,
+                          flexWrap: 'wrap',
+                        }}>
+                        {question.explanation}
+                      </Text>
+                    </ButtonStyled>
+                    </>
+                  ) : (
+                    <View />
+                  )}
+
+                  <View
+                    style={{
+                      marginTop: 36,
+                      flexDirection: 'row',
+                      justifyContent: 'center',
+                      width: '100%',
+                    }}>
+                    {/* {questionIndex > 0 ? (
+                      <ButtonStyledPrevNext onPress={prevQuestion}>
+                        <Iconn name="arrow-left" color={colorText} size={17} />
+                      </ButtonStyledPrevNext>
+                    ) : (
+                      <View />
+                    )} */}
+                    {questionIndex < questions.length - 1 ? (
+                      <ButtonStyledPrevNext onPress={nextQuestion}>
+                        <Iconn name="arrow-right" color={colorText} size={17} />
+                      </ButtonStyledPrevNext>
+                    ) : (
+                      <View />
+                    )}
+                  </View>
+                </View>
+              ) : (
+                <View />
+              )}
             </ScrollView>
           </View>
         </View>
@@ -198,7 +267,7 @@ const mapStateToProps = ({ subjects }) => ({ subjects })
 
 const mapDispatchToProps = dispatch => ({
   setSubjects: items => dispatch(onSubjects(items)),
-  setIsAuth: isAuth => dispatch(onIsAuth(isAuth))
+  setIsAuth: isAuth => dispatch(onIsAuth(isAuth)),
 })
 
 export default connect(

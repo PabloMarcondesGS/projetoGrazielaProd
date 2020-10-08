@@ -1,34 +1,30 @@
 import React from 'react'
 import { Text, View } from 'react-native'
 import { Actions } from 'react-native-router-flux'
-import Questions from './Questions'
 
-import { ViewStyled, ButtonStyled, TextStyled, FlatListStyled } from './styles'
+import { ViewStyled, ButtonStyled, TextStyled } from './styles'
 import Iconn from 'react-native-vector-icons/FontAwesome'
 
-const Item = ({ item }) => {
-  return (
+const Questions = ({ item }) => {
+  return item ? (
     <ViewStyled>
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <View style={{ flexDirection: 'column', flexBasis: '100%' }}>
-          <Text
-            style={{
-              color: item.color,
-              flexBasis: '100%',
-              flexWrap: 'wrap',
-              textAlign: 'center',
-              paddingTop: 20,
-            }}>
-            {item.name}
-          </Text>
-          {item.subcategory ? (
-            <View style={{ flex: 1 }}>
-              <FlatListStyled
-                data={item.subcategory}
-                renderItem={Questions}
-                keyExtractor={item => (item ? item.name : null)}
-              />
-            </View>
+        <Iconn
+          name="file"
+          color={item.color}
+          size={28}
+          style={{ marginRight: 15, marginLeft: 15, flexBasis: '15%' }}
+        />
+        <View style={{ flexDirection: 'column', flexBasis: '85%' }}>
+          {item.name ? (
+            <Text
+              style={{
+                color: item.color,
+                flexBasis: '100%',
+                flexWrap: 'wrap'
+              }}>
+              {item.name ? item.name : ''}
+            </Text>
           ) : (
             <View />
           )}
@@ -44,13 +40,13 @@ const Item = ({ item }) => {
           )}
         </View>
       </View>
-      {/* <View
+      <View
         style={{
           flexDirection: 'row',
           marginTop: 24,
           justifyContent: 'space-between',
         }}>
-        <ButtonStyled onPress={() => Actions.Question()}>
+        <ButtonStyled onPress={() => Actions.Question({ subject: item })}>
           <Iconn
             name="edit"
             color={item.color}
@@ -94,9 +90,11 @@ const Item = ({ item }) => {
             Gabarito
           </TextStyled>
         </ButtonStyled>
-      </View> */}
+      </View>
     </ViewStyled>
+  ) : (
+    <View />
   )
 }
 
-export default Item
+export default Questions

@@ -1,16 +1,15 @@
 import styled from 'styled-components'
 
-export const FlatListStyled = styled.FlatList`
-  flex-basis: 0;
-`
-
 export const ViewStyled = styled.View`
   min-height: 80px;
   width: 100%;
   margin-top: 5px;
+  border: 1px;
+  padding: 15px;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  border-color: #e6c315;
+  border-radius: 10px;
   color: ${props => (props.colorText ? props.colorText : '#353A3E')};
 `
 

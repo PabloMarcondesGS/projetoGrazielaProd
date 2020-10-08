@@ -6,7 +6,7 @@ export const ButtonStyled = styled.TouchableOpacity`
   padding: 10px;
   border-radius: 10px;
   background: grey;
-  margin-top: 24px;
+  margin-top: 8px;
 `
 
 export const ButtonStyledPrevNext = styled.TouchableOpacity`

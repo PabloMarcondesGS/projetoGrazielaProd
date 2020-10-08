@@ -6,7 +6,7 @@ import {
   Dimensions,
   Alert,
   BackHandler,
-  TouchableOpacity,
+  TouchableOpacity
 } from 'react-native'
 import { map } from 'lodash'
 import {
@@ -23,7 +23,7 @@ import {
   Icon,
   Button,
   Card,
-  CardItem,
+  CardItem
 } from 'native-base'
 
 import { shuffle } from '../../utils'
@@ -46,13 +46,12 @@ const Home = ({ subject }) => {
     if (subject) {
       const updatedQuestions = shuffle(map(subject.questions, x => x))
       setQuestions(updatedQuestions)
-
-      setAnswer()
-      setIsSolved(false)
       setQuestion({ ...updatedQuestions[0], solved: false })
       setQuestionIndex(0)
       setCorrects(0)
       setWrongs(0)
+      setAnswer()
+      setIsSolved(false)
     }
   }
 
@@ -85,16 +84,16 @@ const Home = ({ subject }) => {
       [
         {
           text: 'Cancelar',
-          style: 'cancel',
+          style: 'cancel'
         },
         {
           text: 'Sair',
           onPress: () => {
             Actions.pop()
-          },
-        },
+          }
+        }
       ],
-      { cancelable: false },
+      { cancelable: false }
     )
     return true
   }
@@ -136,7 +135,7 @@ const Home = ({ subject }) => {
                 style={{
                   marginTop: 'auto',
                   marginBottom: 0,
-                  ...styles.letters,
+                  ...styles.letters
                 }}>
                 {` de ${questions.length}`}
               </H3>
@@ -147,7 +146,7 @@ const Home = ({ subject }) => {
               style={{
                 flexDirection: 'column',
                 marginTop: 12,
-                marginRight: 12,
+                marginRight: 12
               }}>
               <Text style={{ textAlign: 'right', ...styles.letters }}>
                 Certas: {corrects}
@@ -173,7 +172,7 @@ const Home = ({ subject }) => {
                 option === answer &&
                   isSolved &&
                   !option.correct &&
-                  styles.textIncorrect,
+                  styles.textIncorrect
               ]}
               button
               disabled={isSolved}
@@ -183,7 +182,7 @@ const Home = ({ subject }) => {
                   style={[
                     styles.letters,
                     option === answer && { color: '#000' },
-                    option === answer && isSolved && styles.textOptionSelected,
+                    option === answer && isSolved && styles.textOptionSelected
                   ]}>
                   {letters[option.order]}
                 </Text>
@@ -191,7 +190,7 @@ const Home = ({ subject }) => {
                   style={[
                     styles.letters,
                     option === answer && { color: '#000' },
-                    option === answer && isSolved && styles.textOptionSelected,
+                    option === answer && isSolved && styles.textOptionSelected
                   ]}>
                   {option.description}
                 </Text>
@@ -220,7 +219,7 @@ const Home = ({ subject }) => {
                   backgroundColor: '#232729',
                   paddingTop: 10,
                   borderRadius: 4,
-                  justifyContent: 'center',
+                  justifyContent: 'center'
                 }}>
                 <H2 style={[styles.letters, { textAlign: 'center' }]}>
                   Comentário do professor

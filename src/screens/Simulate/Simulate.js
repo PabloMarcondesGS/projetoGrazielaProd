@@ -18,54 +18,6 @@ const Simulate = ({ subjects, setSubjects, setIsAuth }) => {
   const [back, setBack] = useState('#353A3E')
   const [colorText, setColorText] = useState('#353A3E')
 
-  const onLoad = () => {
-    database()
-      .ref('/subjects')
-      .once('value', snapshot => {
-        const updatedSubjects = map(snapshot.val(), x => x)
-        setSubjects(updatedSubjects)
-      })
-  }
-
-  const DATA = [
-    {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-      title: 'First Item',
-      description: 'Lei n° 12.132 de 04/12/2025',
-      color: colorText
-    },
-    {
-      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-      title: 'Second Item',
-      description: 'Lei n° 12.132 de 04/12/2025',
-      color: colorText
-    },
-    {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
-      title: 'Third Item',
-      description: 'Lei n° 12.132 de 04/12/2025',
-      color: colorText
-    },
-    {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28bc',
-      title: 'First Item',
-      description: 'Lei n° 12.132 de 04/12/2025',
-      color: colorText
-    },
-    {
-      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f64',
-      title: 'Second Item',
-      description: 'Lei n° 12.132 de 04/12/2025',
-      color: colorText
-    },
-    {
-      id: '58694a0f-3da1-471f-bd96-145571e29d73',
-      title: 'Third Item',
-      description: 'Lei n° 12.132 de 04/12/2025',
-      color: colorText
-    },
-  ]
-
   useEffect(() => {
     async function getData() {
       try {
@@ -86,8 +38,6 @@ const Simulate = ({ subjects, setSubjects, setIsAuth }) => {
     getData()
   }, [])
 
-  useEffect(onLoad, [])
-
   return (
     <View style={{ ...styles.viewmenu, backgroundColor: back }}>
       <Header style={{ backgroundColor: back }}>
@@ -100,10 +50,10 @@ const Simulate = ({ subjects, setSubjects, setIsAuth }) => {
           </Text>
         </Left>
       </Header>
-      <View style={{ flex: 1 }}>
-        <View style={styles.containerText}>
+      <View style={styles.containerText}>
+        <View style={{ flex: 1 }}>
           <FlatListStyled
-            data={DATA}
+            data={subjects}
             renderItem={Item}
             keyExtractor={item => item.id}
           />
@@ -117,7 +67,7 @@ const mapStateToProps = ({ subjects }) => ({ subjects })
 
 const mapDispatchToProps = dispatch => ({
   setSubjects: items => dispatch(onSubjects(items)),
-  setIsAuth: isAuth => dispatch(onIsAuth(isAuth)),
+  setIsAuth: isAuth => dispatch(onIsAuth(isAuth))
 })
 
 export default connect(
