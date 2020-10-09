@@ -54,7 +54,7 @@ const Questions = ({ subjects }) => {
             <Iconn name="arrow-left" color={colorText} size={17} />
           </Button>
           <Text style={{ color: colorText, fontSize: 17, marginLeft: 10 }}>
-            Simulados
+            Questões
           </Text>
         </Left>
       </Header>

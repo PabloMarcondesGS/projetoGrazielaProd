@@ -187,7 +187,7 @@ const Question = ({ subject, setSubjects}) => {
     <View style={{ ...styles.viewmenu, backgroundColor: back }}>
       <Header style={{ backgroundColor: back }}>
         <Left style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-          <Button transparent onPress={() => Actions.Home()}>
+          <Button transparent onPress={() => Actions.pop()}>
             <Iconn name="arrow-left" color={colorText} size={17} />
           </Button>
           <Text style={{ color: colorText, fontSize: 17, marginLeft: 10 }}>

@@ -4,6 +4,7 @@ import { Alert, BackHandler, Image } from 'react-native'
 import { Actions } from 'react-native-router-flux'
 import { database } from 'firebase'
 import { map } from 'lodash'
+import AsyncStorage from '@react-native-community/async-storage'
 import {
   Container,
   Header,
@@ -17,7 +18,7 @@ import {
   Left,
   Right,
   Icon,
-  Button
+  Button,
 } from 'native-base'
 
 import { onSubjects } from '../../store/actions/subjects'
@@ -60,19 +61,20 @@ const Init = ({ subjects, setSubjects, setIsAuth }) => {
 
   const onLogOutClick = () => {
     Alert.alert(
-      'Deseja sair?',
+      'Deseja sair do aplicativo?',
       '',
       [
         {
           text: 'Cancelar',
-          style: 'cancel'
+          style: 'cancel',
         },
         {
           text: 'Sair',
-          onPress: () => {
+          onPress: async () => {
+            await AsyncStorage.removeItem('@background:marcosmoraesemail')
             BackHandler.exitApp()
-          }
-        }
+          },
+        },
       ],
       { cancelable: false }
     )
@@ -119,7 +121,7 @@ const mapStateToProps = ({ subjects }) => ({ subjects })
 
 const mapDispatchToProps = dispatch => ({
   setSubjects: items => dispatch(onSubjects(items)),
-  setIsAuth: isAuth => dispatch(onIsAuth(isAuth))
+  setIsAuth: isAuth => dispatch(onIsAuth(isAuth)),
 })
 
 export default connect(

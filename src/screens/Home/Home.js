@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
-import { Alert, BackHandler, Switch } from 'react-native'
+import { Alert, BackHandler, Share, Switch } from 'react-native'
 import { Actions } from 'react-native-router-flux'
 import { database } from 'firebase'
 import { map } from 'lodash'
@@ -18,19 +18,20 @@ const color = { color: '#BDC2C6' }
 
 const onBack = () => {
   Alert.alert(
-    'Deseja sair?',
+    'Deseja sair do aplicativo?',
     '',
     [
       {
         text: 'Cancelar',
-        style: 'cancel'
+        style: 'cancel',
       },
       {
         text: 'Sair',
-        onPress: () => {
+        onPress: async () => {
+          await AsyncStorage.removeItem('@background:marcosmoraesemail')
           Actions.SignIn()
-        }
-      }
+        },
+      },
     ],
     { cancelable: false }
   )
@@ -73,6 +74,18 @@ const Home = ({ subjects, setSubjects, setIsAuth }) => {
       // saving error
     }
   }
+
+  const shareOptions = {
+    title: 'Quer passar no Concurso da PM/CE?',
+    message:
+      'Quer passar no Concurso da PM/CE? Recomendo o App do Antigão https://play.google.com/store/apps/details?id=br.com.criatees.appdoantigao', // Note that according to the documentation at least one of "message" or "url" fields is required
+    url:
+      'https://play.google.com/store/apps/details?id=br.com.criatees.appdoantigao'
+    // subject:
+    //   '',
+  }
+
+  const onSharePress = () => Share.share(shareOptions)
 
   useEffect(() => {
     async function getData() {
@@ -118,29 +131,25 @@ const Home = ({ subjects, setSubjects, setIsAuth }) => {
 
   const onLogOutClick = () => {
     Alert.alert(
-      'Deseja sair?',
+      'Deseja sair do aplicativo?',
       '',
       [
         {
           text: 'Cancelar',
-          style: 'cancel'
+          style: 'cancel',
         },
         {
           text: 'Sair',
-          onPress: () => {
+          onPress: async () => {
             setIsAuth(false)
+            await AsyncStorage.removeItem('@background:marcosmoraesemail')
             Actions.SignIn()
             // BackHandler.exitApp()
-          }
-        }
+          },
+        },
       ],
       { cancelable: false }
     )
-  }
-
-  const onClickProfile = () => {
-    BackHandler.removeEventListener('hardwareBackPress', onBack)
-    Actions.Profile()
   }
 
   useEffect(onLoad, [])
@@ -192,10 +201,15 @@ const Home = ({ subjects, setSubjects, setIsAuth }) => {
         </TouchableOpacity>
         <TouchableOpacity
           style={{ ...styles.button, marginTop: 14 }}
-          onPress={() => Actions.ComplementMaterial()}>
+          onPress={() => {
+            Linking.openURL(
+              'https://drive.google.com/u/0/uc?id=1G4PbxJdsQ-DzGXo9KCcQuUoApPyjbydA&export=download'
+            )
+          }}>
           <Iconn name="file" size={30} color="#FFFFFF" />
           <Text style={styles.icontext}>Material</Text>
         </TouchableOpacity>
+
         <TouchableOpacity
           style={{ ...styles.button, marginTop: 14 }}
           onPress={() => {
@@ -235,11 +249,7 @@ const Home = ({ subjects, setSubjects, setIsAuth }) => {
           }}>
           <Iconn name="whatsapp" size={30} color="#006400" />
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.social}
-          onPress={() => {
-            Linking.openURL('https://www.instagram.com/professormarcosmoraes/')
-          }}>
+        <TouchableOpacity style={styles.social} onPress={onSharePress}>
           <Iconn name="share-square" size={30} color="#666666" />
         </TouchableOpacity>
       </View>
@@ -248,7 +258,7 @@ const Home = ({ subjects, setSubjects, setIsAuth }) => {
           marginTop: 24,
           alignItems: 'center',
           justifyContent: 'center',
-          flexDirection: 'row'
+          flexDirection: 'row',
         }}>
         <Text style={{ color: colorText }}>Modo escuro: </Text>
         <Switch
@@ -267,7 +277,7 @@ const mapStateToProps = ({ subjects }) => ({ subjects })
 
 const mapDispatchToProps = dispatch => ({
   setSubjects: items => dispatch(onSubjects(items)),
-  setIsAuth: isAuth => dispatch(onIsAuth(isAuth))
+  setIsAuth: isAuth => dispatch(onIsAuth(isAuth)),
 })
 
 export default connect(

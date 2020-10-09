@@ -52,35 +52,35 @@ const Gabarite = ({ subjects, setSubjects, setIsAuth }) => {
     {
       question: 1,
       id: 123123,
-      isCorrect: true
+      isCorrect: true,
     },
     {
       question: 2,
       id: 1231234,
-      isCorrect: true
+      isCorrect: true,
     },
     {
       question: 3,
       id: 1231233,
-      isCorrect: true
+      isCorrect: true,
     },
     {
       question: 4,
       id: 12312344,
-      isCorrect: false
+      isCorrect: false,
     },
     {
       question: 5,
       id: 123123466666,
-      isCorrect: true
-    }
+      isCorrect: true,
+    },
   ]
 
   return (
     <View style={{ ...styles.viewmenu, backgroundColor: back }}>
       <Header style={{ backgroundColor: back }}>
         <Left style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-          <Button transparent onPress={() => Actions.Home()}>
+          <Button transparent onPress={() => Actions.pop()}>
             <Iconn name="arrow-left" color={colorText} size={17} />
           </Button>
           <Text style={{ color: colorText, fontSize: 17, marginLeft: 10 }}>
@@ -94,7 +94,7 @@ const Gabarite = ({ subjects, setSubjects, setIsAuth }) => {
             style={{
               flexDirection: 'row',
               alignItems: 'center',
-              marginBottom: 24
+              marginBottom: 24,
             }}>
             <Iconn
               name="file"
@@ -107,7 +107,7 @@ const Gabarite = ({ subjects, setSubjects, setIsAuth }) => {
                 style={{
                   color: colorText,
                   flexBasis: '100%',
-                  flexWrap: 'wrap',
+                  flexWrap: 'wrap'
                 }}>
                 Gabarito Simulado 01
               </Text>
@@ -115,7 +115,7 @@ const Gabarite = ({ subjects, setSubjects, setIsAuth }) => {
                 style={{
                   color: colorText,
                   flexBasis: '100%',
-                  flexWrap: 'wrap',
+                  flexWrap: 'wrap'
                 }}>
                 Concurso PM/CE - 38 questões
               </Text>
@@ -125,7 +125,7 @@ const Gabarite = ({ subjects, setSubjects, setIsAuth }) => {
             style={{
               flexDirection: 'row',
               flexWrap: 'wrap',
-              width: '100%',
+              width: '100%'
             }}>
             <ScrollView style={{ flex: 1 }}>
               {data && data.length ? (
@@ -135,7 +135,7 @@ const Gabarite = ({ subjects, setSubjects, setIsAuth }) => {
                       style={{
                         color: colorText,
                         textAlign: 'justify',
-                        fontSize: 13,
+                        fontSize: 13
                       }}>
                       {`${da.question} - ${da.isCorrect ? 'CERTO' : 'ERRADA'}`}
                     </Text>
@@ -156,7 +156,7 @@ const mapStateToProps = ({ subjects }) => ({ subjects })
 
 const mapDispatchToProps = dispatch => ({
   setSubjects: items => dispatch(onSubjects(items)),
-  setIsAuth: isAuth => dispatch(onIsAuth(isAuth)),
+  setIsAuth: isAuth => dispatch(onIsAuth(isAuth))
 })
 
 export default connect(

@@ -115,7 +115,7 @@ const ResultSimulate = ({ subject, setSubjects }) => {
                       : 0,
                   color: 'red',
                   legendFontColor: colorText,
-                  legendFontSize: 12
+                  legendFontSize: 12,
                 },
                 {
                   name: 'Acertos',
@@ -125,8 +125,8 @@ const ResultSimulate = ({ subject, setSubjects }) => {
                       : 0,
                   color: 'green',
                   legendFontColor: colorText,
-                  legendFontSize: 12
-                }
+                  legendFontSize: 12,
+                },
               ])
             }
           }
@@ -144,7 +144,7 @@ const ResultSimulate = ({ subject, setSubjects }) => {
     color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
     strokeWidth: 1, // optional, default 3
     barPercentage: 0.5,
-    useShadowColorFromDataset: false, // optional
+    useShadowColorFromDataset: false // optional
   }
   return loading ? (
     <ActivityIndicator style={styles.loader} />
@@ -171,7 +171,7 @@ const ResultSimulate = ({ subject, setSubjects }) => {
               padding: 20,
               borderWidth: 1,
               borderColor: '#e6c315',
-              borderRadius: 10
+              borderRadius: 10,
             }}>
             <Iconn
               name="random"
@@ -184,7 +184,7 @@ const ResultSimulate = ({ subject, setSubjects }) => {
                 style={{
                   color: colorText,
                   flexBasis: '100%',
-                  flexWrap: 'wrap',
+                  flexWrap: 'wrap'
                 }}>
                 Resultado - {question.simulate} - {question.total} questões
               </Text>
@@ -198,7 +198,7 @@ const ResultSimulate = ({ subject, setSubjects }) => {
               padding: 20,
               borderWidth: 1,
               borderColor: '#e6c315',
-              borderRadius: 10
+              borderRadius: 10,
             }}>
             <ScrollView style={{ flex: 1 }}>
               <Text
@@ -207,7 +207,7 @@ const ResultSimulate = ({ subject, setSubjects }) => {
                   width: '100%',
                   textAlign: 'center',
                   fontSize: 17,
-                  flexWrap: 'wrap'
+                  flexWrap: 'wrap',
                 }}>
                 Simulado Concluído
               </Text>
@@ -226,7 +226,7 @@ const ResultSimulate = ({ subject, setSubjects }) => {
                   width: '100%',
                   textAlign: 'center',
                   fontSize: 17,
-                  flexWrap: 'wrap'
+                  flexWrap: 'wrap',
                 }}>
                 Acertos: {question.corrects} questões
               </Text>
@@ -236,7 +236,7 @@ const ResultSimulate = ({ subject, setSubjects }) => {
                   width: '100%',
                   textAlign: 'center',
                   fontSize: 17,
-                  flexWrap: 'wrap'
+                  flexWrap: 'wrap',
                 }}>
                 Erros: {question.wrongs} questões
               </Text>
@@ -246,7 +246,7 @@ const ResultSimulate = ({ subject, setSubjects }) => {
                   width: '100%',
                   textAlign: 'center',
                   fontSize: 17,
-                  flexWrap: 'wrap'
+                  flexWrap: 'wrap',
                 }}>
                 Posição: {rankingData} lugar
               </Text>
@@ -275,7 +275,7 @@ const mapStateToProps = ({ subjects }) => ({ subjects })
 
 const mapDispatchToProps = dispatch => ({
   setSubjects: items => dispatch(onSubjects(items)),
-  setIsAuth: isAuth => dispatch(onIsAuth(isAuth)),
+  setIsAuth: isAuth => dispatch(onIsAuth(isAuth))
 })
 
 export default connect(

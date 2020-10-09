@@ -82,7 +82,7 @@ const Ranking = ({ subject, setSubjects, setIsAuth }) => {
     <View style={{ ...styles.viewmenu, backgroundColor: back }}>
       <Header style={{ backgroundColor: back }}>
         <Left style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-          <Button transparent onPress={() => Actions.Home()}>
+          <Button transparent onPress={() => Actions.pop()}>
             <Iconn name="arrow-left" color={colorText} size={17} />
           </Button>
           <Text style={{ color: colorText, fontSize: 17, marginLeft: 10 }}>
@@ -99,7 +99,7 @@ const Ranking = ({ subject, setSubjects, setIsAuth }) => {
               marginBottom: 24,
               paddingTop: 20,
               paddingLeft: 20,
-              paddingRight: 20,
+              paddingRight: 20
             }}>
             <Iconn
               name="random"
@@ -112,7 +112,7 @@ const Ranking = ({ subject, setSubjects, setIsAuth }) => {
                 style={{
                   color: colorText,
                   flexBasis: '100%',
-                  flexWrap: 'wrap'
+                  flexWrap: 'wrap',
                 }}>
                 Ranking {question && question.simulate}
               </Text>
@@ -120,7 +120,7 @@ const Ranking = ({ subject, setSubjects, setIsAuth }) => {
                 style={{
                   color: colorText,
                   flexBasis: '100%',
-                  flexWrap: 'wrap'
+                  flexWrap: 'wrap',
                 }}>
                 {question && question.total} questões
               </Text>
@@ -130,7 +130,7 @@ const Ranking = ({ subject, setSubjects, setIsAuth }) => {
             style={{
               flexDirection: 'row',
               flexWrap: 'wrap',
-              width: '100%'
+              width: '100%',
             }}>
             <ScrollView style={{ flex: 1 }}>
               {data && data.length ? (
@@ -144,7 +144,7 @@ const Ranking = ({ subject, setSubjects, setIsAuth }) => {
                       marginTop: 10,
                       paddingBottom: 10,
                       paddingLeft: 10,
-                      paddingRight: 10
+                      paddingRight: 10,
                     }}>
                     <Text
                       style={{
@@ -155,7 +155,7 @@ const Ranking = ({ subject, setSubjects, setIsAuth }) => {
                         borderLeftWidth: da.user === email ? 1 : 0,
                         borderLeftColor:
                           da.user === email ? '#e6c315' : 'transparent',
-                        paddingLeft: da.user === email ? 8 : 0,
+                        paddingLeft: da.user === email ? 8 : 0
                       }}>
                       {`${index + 1} - ${da.user} - Corretas: ${da.corrects}`}
                     </Text>
@@ -176,7 +176,7 @@ const mapStateToProps = ({ subjects }) => ({ subjects })
 
 const mapDispatchToProps = dispatch => ({
   setSubjects: items => dispatch(onSubjects(items)),
-  setIsAuth: isAuth => dispatch(onIsAuth(isAuth))
+  setIsAuth: isAuth => dispatch(onIsAuth(isAuth)),
 })
 
 export default connect(
