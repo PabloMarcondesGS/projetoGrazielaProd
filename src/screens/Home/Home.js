@@ -23,14 +23,14 @@ const onBack = () => {
     [
       {
         text: 'Cancelar',
-        style: 'cancel',
+        style: 'cancel'
       },
       {
         text: 'Sair',
         onPress: () => {
           Actions.SignIn()
-        },
-      },
+        }
+      }
     ],
     { cancelable: false }
   )
@@ -46,6 +46,7 @@ const Home = ({ subjects, setSubjects, setIsAuth }) => {
   const [back, setBack] = useState('#353A3E')
   const [colorText, setColorText] = useState('#353A3E')
   const [isEnabled, setIsEnabled] = useState(false)
+  const [email, setEmail] = useState('')
   const toggleSwitch = () => {
     setIsEnabled(previousState => !previousState)
     storeData()
@@ -76,6 +77,15 @@ const Home = ({ subjects, setSubjects, setIsAuth }) => {
   useEffect(() => {
     async function getData() {
       try {
+        const emailAsync = await AsyncStorage.getItem(
+          '@background:marcosmoraesemail'
+        )
+        if (emailAsync) {
+          setEmail(emailAsync)
+        } else {
+          Actions.SignIn()
+          return
+        }
         const value = await AsyncStorage.getItem('@background:marcosmoraes')
         const valueText = await AsyncStorage.getItem(
           '@background:marcosmoraestext'
@@ -113,7 +123,7 @@ const Home = ({ subjects, setSubjects, setIsAuth }) => {
       [
         {
           text: 'Cancelar',
-          style: 'cancel',
+          style: 'cancel'
         },
         {
           text: 'Sair',
@@ -121,8 +131,8 @@ const Home = ({ subjects, setSubjects, setIsAuth }) => {
             setIsAuth(false)
             Actions.SignIn()
             // BackHandler.exitApp()
-          },
-        },
+          }
+        }
       ],
       { cancelable: false }
     )
@@ -176,7 +186,7 @@ const Home = ({ subjects, setSubjects, setIsAuth }) => {
         </TouchableOpacity>
         <TouchableOpacity
           style={{ ...styles.button, marginTop: 14 }}
-          onPress={() => Actions.Simulate()}>
+          onPress={() => Actions.Simulate({ email })}>
           <Iconn name="check" size={30} color="#FFFFFF" />
           <Text style={styles.icontextTeacher}>Simulados</Text>
         </TouchableOpacity>
@@ -238,7 +248,7 @@ const Home = ({ subjects, setSubjects, setIsAuth }) => {
           marginTop: 24,
           alignItems: 'center',
           justifyContent: 'center',
-          flexDirection: 'row',
+          flexDirection: 'row'
         }}>
         <Text style={{ color: colorText }}>Modo escuro: </Text>
         <Switch
@@ -257,7 +267,7 @@ const mapStateToProps = ({ subjects }) => ({ subjects })
 
 const mapDispatchToProps = dispatch => ({
   setSubjects: items => dispatch(onSubjects(items)),
-  setIsAuth: isAuth => dispatch(onIsAuth(isAuth)),
+  setIsAuth: isAuth => dispatch(onIsAuth(isAuth))
 })
 
 export default connect(

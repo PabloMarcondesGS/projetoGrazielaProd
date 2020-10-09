@@ -1,34 +1,38 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { Alert, BackHandler, ScrollView } from 'react-native'
 import { Actions } from 'react-native-router-flux'
 import { database } from 'firebase'
 import { map } from 'lodash'
-import { View, Image } from 'react-native'
+import { View } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage'
-import { Text, Header, Left, Button, Icon } from 'native-base'
+import { Text, Header, Left, Button } from 'native-base'
 
 import { onSubjects } from '../../store/actions/subjects'
 import { onIsAuth } from '../../store/actions/authorization'
 import styles from './styles'
 import Iconn from 'react-native-vector-icons/FontAwesome'
 
-const Ranking = ({ subjects, setSubjects, setIsAuth }) => {
+const Ranking = ({ subject, setSubjects, setIsAuth }) => {
   const [back, setBack] = useState('#353A3E')
   const [colorText, setColorText] = useState('#353A3E')
-
-  const onLoad = () => {
-    database()
-      .ref('/subjects')
-      .once('value', snapshot => {
-        const updatedSubjects = map(snapshot.val(), x => x)
-        setSubjects(updatedSubjects)
-      })
-  }
+  const [questions, setQuestions] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [question, setQuestion] = useState({})
+  const [data, setData] = useState([])
+  const [email, setEmail] = useState('')
+  const [rankingData, setRankingData] = useState([])
 
   useEffect(() => {
     async function getData() {
       try {
+        const emailAsync = await AsyncStorage.getItem(
+          '@background:marcosmoraesemail'
+        )
+        if (emailAsync) {
+          setEmail(emailAsync)
+        }
         const value = await AsyncStorage.getItem('@background:marcosmoraes')
         const valueText = await AsyncStorage.getItem(
           '@background:marcosmoraestext'
@@ -46,30 +50,33 @@ const Ranking = ({ subjects, setSubjects, setIsAuth }) => {
     getData()
   }, [])
 
-  useEffect(onLoad, [])
+  useEffect(() => {
+    setLoading(true)
+    database()
+      .ref('/simulate')
+      .once('value', snapshot => {
+        if (email) {
+          const updatedSubjects = map(snapshot.val(), x => x)
 
-  const data = [
-    {
-      name: 'Rodrigo',
-      id: 1
-    },
-    {
-      name: 'Rodrigo',
-      id: 2
-    },
-    {
-      name: 'Rodrigo',
-      id: 3
-    },
-    {
-      name: 'Rodrigo',
-      id: 4
-    },
-    {
-      name: 'Rodrigo',
-      id: 5
-    },
-  ]
+          const valuesRanking = updatedSubjects.filter(
+            val => val.simulate === subject.name
+          )
+          const sortedArr = valuesRanking.sort(function(a, b) {
+            if (a.corrects > b.corrects) {
+              return -1
+            }
+            if (a.corrects < b.corrects) {
+              return 1
+            }
+            return 0
+          })
+          setData(sortedArr)
+
+          setQuestions(updatedSubjects)
+          setQuestion(updatedSubjects[updatedSubjects.length - 1])
+        }
+      })
+  }, [subject, email, setSubjects, colorText])
 
   return (
     <View style={{ ...styles.viewmenu, backgroundColor: back }}>
@@ -107,7 +114,7 @@ const Ranking = ({ subjects, setSubjects, setIsAuth }) => {
                   flexBasis: '100%',
                   flexWrap: 'wrap'
                 }}>
-                Ranking Simulado 01
+                Ranking {question && question.simulate}
               </Text>
               <Text
                 style={{
@@ -115,7 +122,7 @@ const Ranking = ({ subjects, setSubjects, setIsAuth }) => {
                   flexBasis: '100%',
                   flexWrap: 'wrap'
                 }}>
-                Concurso PM/CE - 38 questões
+                {question && question.total} questões
               </Text>
             </View>
           </View>
@@ -127,7 +134,7 @@ const Ranking = ({ subjects, setSubjects, setIsAuth }) => {
             }}>
             <ScrollView style={{ flex: 1 }}>
               {data && data.length ? (
-                data.map(da => (
+                data.map((da, index) => (
                   <View
                     style={{
                       flexBasis: '100%',
@@ -136,16 +143,21 @@ const Ranking = ({ subjects, setSubjects, setIsAuth }) => {
                       borderBottomColor: '#e6c315',
                       marginTop: 10,
                       paddingBottom: 10,
-                      paddingLeft: 20,
-                      borderRadius: 10
+                      paddingLeft: 10,
+                      paddingRight: 10
                     }}>
                     <Text
                       style={{
-                        color: colorText,
+                        color: da.user === email ? '#e6c315' : colorText,
                         textAlign: 'justify',
-                        fontSize: 17
+                        fontSize: 17,
+                        flexWrap: 'wrap',
+                        borderLeftWidth: da.user === email ? 1 : 0,
+                        borderLeftColor:
+                          da.user === email ? '#e6c315' : 'transparent',
+                        paddingLeft: da.user === email ? 8 : 0,
                       }}>
-                      {`${da.id} - ${da.name}`}
+                      {`${index + 1} - ${da.user} - Corretas: ${da.corrects}`}
                     </Text>
                   </View>
                 ))

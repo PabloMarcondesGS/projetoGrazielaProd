@@ -14,13 +14,23 @@ import styles, { FlatListStyled } from './styles'
 import Item from './Item'
 import Iconn from 'react-native-vector-icons/FontAwesome'
 
-const Simulate = ({ subjects, setSubjects, setIsAuth }) => {
+const Simulate = ({ subjects }) => {
   const [back, setBack] = useState('#353A3E')
   const [colorText, setColorText] = useState('#353A3E')
+  const [email, setEmail] = useState('')
 
   useEffect(() => {
     async function getData() {
       try {
+        const emailAsync = await AsyncStorage.getItem(
+          '@background:marcosmoraesemail'
+        )
+        if (emailAsync) {
+          setEmail(emailAsync)
+        } else {
+          Actions.SignIn()
+          return
+        }
         const value = await AsyncStorage.getItem('@background:marcosmoraes')
         const valueText = await AsyncStorage.getItem(
           '@background:marcosmoraestext'
@@ -54,7 +64,15 @@ const Simulate = ({ subjects, setSubjects, setIsAuth }) => {
         <View style={{ flex: 1 }}>
           <FlatListStyled
             data={subjects}
-            renderItem={Item}
+            renderItem={({ item }) => (
+              <Item
+                item={item}
+                email={email}
+                colorText={colorText}
+                back={back}
+              />
+            )}
+            email="rodrigoaraujo990@"
             keyExtractor={item => item.id}
           />
         </View>

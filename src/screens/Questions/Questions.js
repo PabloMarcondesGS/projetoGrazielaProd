@@ -1,12 +1,10 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
-import { Alert, BackHandler, ScrollView } from 'react-native'
 import { Actions } from 'react-native-router-flux'
-import { database } from 'firebase'
-import { map } from 'lodash'
-import { View, Image } from 'react-native'
+import { View } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage'
-import { Text, Header, Left, Button, Icon } from 'native-base'
+import { Text, Header, Left, Button } from 'native-base'
 
 import { onSubjects } from '../../store/actions/subjects'
 import { onIsAuth } from '../../store/actions/authorization'
@@ -14,55 +12,23 @@ import styles, { FlatListStyled } from './styles'
 import Item from './Item'
 import Iconn from 'react-native-vector-icons/FontAwesome'
 
-const Questions = ({ subjects, setSubjects, setIsAuth }) => {
+const Questions = ({ subjects }) => {
   const [back, setBack] = useState('#353A3E')
   const [colorText, setColorText] = useState('#353A3E')
-
-  const onLoad = () => {
-    database()
-      .ref('/subjects')
-      .once('value', snapshot => {
-        const updatedSubjects = map(snapshot.val(), x => x)
-        setSubjects(updatedSubjects)
-      })
-  }
-
-  const DATA = [
-    {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-      title: 'First Item',
-      color: colorText,
-    },
-    {
-      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-      title: 'Second Item',
-      color: colorText,
-    },
-    {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
-      title: 'Third Item',
-      color: colorText,
-    },
-    {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28bc',
-      title: 'First Item',
-      color: colorText,
-    },
-    {
-      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f64',
-      title: 'Second Item',
-      color: colorText,
-    },
-    {
-      id: '58694a0f-3da1-471f-bd96-145571e29d73',
-      title: 'Third Item',
-      color: colorText,
-    }
-  ]
+  const [email, setEmail] = useState('')
 
   useEffect(() => {
     async function getData() {
       try {
+        const emailAsync = await AsyncStorage.getItem(
+          '@background:marcosmoraesemail'
+        )
+        if (emailAsync) {
+          setEmail(emailAsync)
+        } else {
+          Actions.SignIn()
+          return
+        }
         const value = await AsyncStorage.getItem('@background:marcosmoraes')
         const valueText = await AsyncStorage.getItem(
           '@background:marcosmoraestext'
@@ -80,8 +46,6 @@ const Questions = ({ subjects, setSubjects, setIsAuth }) => {
     getData()
   }, [])
 
-  useEffect(onLoad, [])
-
   return (
     <View style={{ ...styles.viewmenu, backgroundColor: back }}>
       <Header style={{ backgroundColor: back }}>
@@ -90,17 +54,23 @@ const Questions = ({ subjects, setSubjects, setIsAuth }) => {
             <Iconn name="arrow-left" color={colorText} size={17} />
           </Button>
           <Text style={{ color: colorText, fontSize: 17, marginLeft: 10 }}>
-            Questões
+            Simulados
           </Text>
         </Left>
       </Header>
       <View style={styles.containerText}>
         <View style={{ flex: 1 }}>
           <FlatListStyled
-            colorText={colorText}
-            color={colorText}
-            data={DATA}
-            renderItem={Item}
+            data={subjects}
+            renderItem={({ item }) => (
+              <Item
+                item={item}
+                email={email}
+                colorText={colorText}
+                back={back}
+              />
+            )}
+            email="rodrigoaraujo990@"
             keyExtractor={item => item.id}
           />
         </View>

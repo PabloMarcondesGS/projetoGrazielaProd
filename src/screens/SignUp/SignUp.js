@@ -17,9 +17,6 @@ const action = { backgroundColor: '#e6c315' }
 
 const SignUp = ({ setIsAuth }) => {
   const formRef = useRef(null)
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
   const [loading, setLoading] = useState(false)
 
   const onRegister = async data => {
@@ -32,6 +29,7 @@ const SignUp = ({ setIsAuth }) => {
       await auth().createUserWithEmailAndPassword(data.email, data.password)
       await AsyncStorage.setItem('@background:marcosmoraes', '#353A3E')
       await AsyncStorage.setItem('@background:marcosmoraestext', '#ffffff')
+      await AsyncStorage.setItem('@background:marcosmoraesemail', data.email)
       setIsAuth(true)
       Actions.Home()
     } catch ({ code }) {

@@ -1,8 +1,9 @@
+/* eslint-disable radix */
 /* eslint-disable prettier/prettier */
 /* eslint-disable react-native/no-inline-styles */
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { connect } from 'react-redux'
-import { ScrollView } from 'react-native'
+import { ScrollView, Alert, ActivityIndicator } from 'react-native'
 import { Actions } from 'react-native-router-flux'
 import { database } from 'firebase'
 import { map } from 'lodash'
@@ -16,7 +17,7 @@ import { onIsAuth } from '../../store/actions/authorization'
 import styles, { ButtonStyled, ButtonStyledPrevNext } from './styles'
 
 import { shuffle } from '../../utils'
-const Question = ({ subject, setSubjects, setIsAuth }) => {
+const Question = ({ subject, setSubjects}) => {
   const [back, setBack] = useState('#353A3E')
   const [colorText, setColorText] = useState('#353A3E')
   const [questions, setQuestions] = useState([])
@@ -24,48 +25,52 @@ const Question = ({ subject, setSubjects, setIsAuth }) => {
   const [question, setQuestion] = useState({})
   const [corrects, setCorrects] = useState(0)
   const [wrongs, setWrongs] = useState(0)
+  const [correct, setCorrect] = useState(false)
+  const [wrong, setWrong] = useState(false)
   const [questionIndex, setQuestionIndex] = useState(0)
-
-  const onLoad = () => {
-    database()
-      .ref('/subjects')
-      .once('value', snapshot => {
-        const updatedSubjects = map(snapshot.val(), x => x)
-        setSubjects(updatedSubjects)
-      })
-  }
-
-  const onSolveClick = option => {
+  const [email, setEmail] = useState('')
+  const [loading, setLoading] = useState(false)
+  const onSolveClick = useCallback(async option => {
+    setLoading(true)
     setIsSolved(true)
-
     if (option.correct) {
-      setCorrects(corrects + 1)
+      setCorrects(prev => prev + 1)
+      setCorrect(true)
+      setWrong(false)
     } else {
-      setWrongs(wrongs + 1)
+      setWrongs(prev => prev + 1)
+      setWrong(true)
+      setCorrect(false)
     }
-  }
+    await AsyncStorage.setItem('@background:marcosmoraesquestionwrongs',
+      wrongs.toString())
+    await AsyncStorage.setItem('@background:marcosmoraesquestioncorrects',
+      corrects.toString())
+    setLoading(false)
+  },[corrects, wrongs])
 
-  const nextQuestion = () => {
+  const nextQuestion = useCallback(async () => {
+    setLoading(true)
     const updatedQuestionIndex = questionIndex + 1
     const newQuestion = questions[updatedQuestionIndex]
 
+    try {
+      if (updatedQuestionIndex > 0) {
+        await AsyncStorage.setItem(`@background:marcosmoraesquestionindex:${subject.name}`,
+          updatedQuestionIndex.toString())
+        await AsyncStorage.setItem(`@background:marcosmoraesquestionname:${subject.name}`,
+          subject ? subject.name : '')
+      }
+    } catch (e) {
+      // saving error
+    }
     if (newQuestion) {
       setIsSolved(false)
       setQuestion(newQuestion)
       setQuestionIndex(updatedQuestionIndex)
     }
-  }
-
-  const prevQuestion = () => {
-    const updatedQuestionIndex = questionIndex - 1
-    const newQuestion = questions[updatedQuestionIndex]
-
-    if (newQuestion) {
-      setIsSolved(false)
-      setQuestion(newQuestion)
-      setQuestionIndex(updatedQuestionIndex)
-    }
-  }
+    setLoading(false)
+  },[questionIndex, questions, subject])
 
   const returnColor = (option) => {
     if (isSolved && option.correct){
@@ -73,24 +78,88 @@ const Question = ({ subject, setSubjects, setIsAuth }) => {
     } else if (isSolved && !option.correct){
       return 'red'
     } else {
-      return colorText
+      return back
     }
   }
 
+  const finishSimulate = useCallback(async () => {
+    try {
+      database()
+        .ref('/simulate')
+        .push({
+          datetime: new Date(),
+          simulate: subject.name,
+          corrects,
+          wrongs,
+          total: questions.length,
+          user: email,
+        })
+      Alert.alert('Simulado finalizado com sucesso')
+      await AsyncStorage.removeItem(`@background:marcosmoraesquestionindex:${subject.name}`)
+      await AsyncStorage.removeItem(`@background:marcosmoraesquestionname:${subject.name}`)
+
+      Actions.ResultSimulate({subject, email})
+    } catch (error){
+      console.log(error)
+    }
+  }, [email, subject, questions, corrects, wrongs])
+
   useEffect(() => {
-    const updatedQuestions = shuffle(map(subject.questions, x => x))
-    // updatedQuestions.map(sub => console.log(sub))
-    setQuestions(updatedQuestions)
-    setQuestion({ ...updatedQuestions[0], solved: false })
-    setQuestionIndex(0)
-    setCorrects(0)
-    setWrongs(0)
-    setIsSolved(false)
+    async function getDataArr (){
+      const updatedQuestions = shuffle(map(subject.questions, x => x))
+      // updatedQuestions.map(sub => console.log(sub))
+      setQuestions(updatedQuestions)
+      try {
+        const indexAsync = await AsyncStorage.getItem(
+          `@background:marcosmoraesquestionindex:${subject.name}`
+        )
+        const questionName = await AsyncStorage.getItem(
+          `@background:marcosmoraesquestionname:${subject.name}`
+        )
+        if (indexAsync && questionName === subject.name){
+          setQuestionIndex(parseInt(indexAsync))
+          setQuestion({ ...updatedQuestions[parseInt(indexAsync)], solved: false })
+          const wrongsQuesitons = await AsyncStorage.getItem(
+            '@background:marcosmoraesquestionwrongs'
+          )
+          const correctQuestions = await AsyncStorage.getItem(
+            '@background:marcosmoraesquestioncorrects'
+          )
+          setWrongs(parseInt(wrongsQuesitons))
+          setCorrects(parseInt(correctQuestions))
+        } else {
+          setQuestionIndex(0)
+          setQuestion({ ...updatedQuestions[0], solved: false })
+          setCorrects(0)
+          setWrongs(0)
+        }
+      } catch (err){
+        console.log(err)
+      }
+      setIsSolved(false)
+    }
+    getDataArr()
   }, [subject])
 
   useEffect(() => {
     async function getData() {
       try {
+        const indexAsync = await AsyncStorage.getItem(
+          `@background:marcosmoraesquestionindex:${subject.name}`
+        )
+        if (indexAsync){
+          // eslint-disable-next-line radix
+          setQuestionIndex(parseInt(indexAsync))
+        }
+        const emailAsync = await AsyncStorage.getItem(
+          '@background:marcosmoraesemail'
+        )
+        if (emailAsync) {
+          setEmail(emailAsync)
+        } else {
+          Actions.SignIn()
+          return
+        }
         const value = await AsyncStorage.getItem('@background:marcosmoraes')
         const valueText = await AsyncStorage.getItem(
           '@background:marcosmoraestext'
@@ -106,11 +175,15 @@ const Question = ({ subject, setSubjects, setIsAuth }) => {
       }
     }
     getData()
-  }, [])
+  }, [subject.name])
 
-  useEffect(onLoad, [])
+  // useEffect(onLoad, [])
 
-  return (
+  return loading ? (
+    <View style={{ flex: 1, alignItems: 'center', color:colorText , justifyContent: 'center', backgroundColor: back }}>
+      <ActivityIndicator  />
+    </View>
+  ) : (
     <View style={{ ...styles.viewmenu, backgroundColor: back }}>
       <Header style={{ backgroundColor: back }}>
         <Left style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
@@ -182,11 +255,13 @@ const Question = ({ subject, setSubjects, setIsAuth }) => {
                     }}>
                     {question.description}
                   </Text>
-                  <Text style={{marginTop: 24, fontSize: 13}}>Verde para a opção correta</Text>
+                  <Text style={{marginTop: 24, fontSize: 13, color: colorText}}>Verde para a opção correta</Text>
+
                   {question.options && question.options.map(option => (
                     <ButtonStyled
                       onPress={() => onSolveClick(option)}
-                      style={{backgroundColor: returnColor(option), color: 'white' }}
+                      style={{backgroundColor: returnColor(option), color: 'white',
+                         borderWidth: 1, borderColor: '#e6c315' }}
                       disabled={isSolved}
                     >
                       <Text
@@ -212,18 +287,29 @@ const Question = ({ subject, setSubjects, setIsAuth }) => {
                   </ButtonStyled> */}
                   {isSolved ? (
                     <>
-                    <Text style={{marginTop: 24, fontSize: 17}}>Explicação:</Text>
-                    <ButtonStyled>
-                      <Text
-                        style={{
-                          width: '100%',
-                          textAlign: 'center',
-                          color: colorText,
-                          flexWrap: 'wrap',
-                        }}>
-                        {question.explanation}
-                      </Text>
-                    </ButtonStyled>
+                      {
+                        wrong && (
+                          <Text style={{marginTop: 24, fontSize: 17, color: 'red', width: '100%', textAlign: 'center'}}>Errou</Text>
+                        )
+                      }
+                      {
+                        correct && (
+                          <Text style={{marginTop: 24, fontSize: 17, color: 'green', width: '100%', textAlign: 'center'}}>Acertou</Text>
+                        )
+                      }
+                      <Text style={{fontSize: 17,color: colorText}}>Explicação:</Text>
+                      {}
+                      <ButtonStyled>
+                        <Text
+                          style={{
+                            width: '100%',
+                            textAlign: 'center',
+                            color: colorText,
+                            flexWrap: 'wrap',
+                          }}>
+                          {question.explanation}
+                        </Text>
+                      </ButtonStyled>
                     </>
                   ) : (
                     <View />
@@ -232,8 +318,9 @@ const Question = ({ subject, setSubjects, setIsAuth }) => {
                   <View
                     style={{
                       marginTop: 36,
-                      flexDirection: 'row',
+                      flexDirection: 'column',
                       justifyContent: 'center',
+                      alignItems: 'center',
                       width: '100%',
                     }}>
                     {/* {questionIndex > 0 ? (
@@ -250,6 +337,18 @@ const Question = ({ subject, setSubjects, setIsAuth }) => {
                     ) : (
                       <View />
                     )}
+                     {questionIndex > 0 ? (
+                      <ButtonStyled onPress={finishSimulate}>
+                        <Text
+                          style={{
+                            width: '100%',
+                            textAlign: 'center',
+                            color: colorText,
+                          }}>
+                          FINALIZAR
+                        </Text>
+                      </ButtonStyled>
+                     ) : <View />}
                   </View>
                 </View>
               ) : (

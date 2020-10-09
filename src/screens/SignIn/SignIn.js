@@ -25,7 +25,23 @@ const action = { backgroundColor: '#e6c315' }
 //   databaseURL: 'https://marcos-moraes.firebaseio.com'
 // }
 
-const SignIn = ({ isAuth, setIsAuth }) => {
+const SignIn = ({ setIsAuth }) => {
+  useEffect(() => {
+    async function getData() {
+      try {
+        const emailAsync = await AsyncStorage.getItem(
+          '@background:marcosmoraesemail'
+        )
+        if (emailAsync) {
+          Actions.Home()
+        }
+      } catch (e) {
+        // error reading value
+      }
+    }
+    getData()
+  }, [])
+
   const _fbAuth = async () => {
     LoginManager.logInWithPermissions(['public_profile', 'email']).then(
       function(result) {
@@ -62,8 +78,6 @@ const SignIn = ({ isAuth, setIsAuth }) => {
   }
 
   const formRef = useRef(null)
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
 
   const handleSignIn = async data => {
@@ -72,9 +86,8 @@ const SignIn = ({ isAuth, setIsAuth }) => {
       await auth().signInWithEmailAndPassword(data.email, data.password)
       await AsyncStorage.setItem('@background:marcosmoraes', '#353A3E')
       await AsyncStorage.setItem('@background:marcosmoraestext', '#ffffff')
+      await AsyncStorage.setItem('@background:marcosmoraesemail', data.email)
       setIsAuth(true)
-      setEmail('')
-      setPassword('')
       Actions.Home()
     } catch (error) {
       Alert.alert('Erro', getErrorMessage(error.code))
@@ -85,15 +98,7 @@ const SignIn = ({ isAuth, setIsAuth }) => {
     }
   }
 
-  const onLoad = () => {
-    isAuth && Actions.Home()
-  }
-
-  useEffect(onLoad, [])
-
-  return isAuth ? (
-    <ActivityIndicator />
-  ) : (
+  return (
     <Container style={[styles.container]}>
       <Image
         source={require('../../img/marcosmoraes.png')}

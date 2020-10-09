@@ -1,19 +1,17 @@
 import React from 'react'
 import { Text, View } from 'react-native'
-import { Actions } from 'react-native-router-flux'
 import Questions from './Questions'
 
-import { ViewStyled, ButtonStyled, TextStyled, FlatListStyled } from './styles'
-import Iconn from 'react-native-vector-icons/FontAwesome'
+import { ViewStyled, FlatListStyled } from './styles'
 
-const Item = ({ item }) => {
+const Item = ({ item, email, colorText, back }) => {
   return (
     <ViewStyled>
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <View style={{ flexDirection: 'column', flexBasis: '100%' }}>
           <Text
             style={{
-              color: item.color,
+              color: colorText,
               flexBasis: '100%',
               flexWrap: 'wrap',
               textAlign: 'center',
@@ -25,7 +23,14 @@ const Item = ({ item }) => {
             <View style={{ flex: 1 }}>
               <FlatListStyled
                 data={item.subcategory}
-                renderItem={Questions}
+                renderItem={({ item }) => (
+                  <Questions
+                    item={item}
+                    email={email}
+                    colorText={colorText}
+                    back={back}
+                  />
+                )}
                 keyExtractor={item => (item ? item.name : null)}
               />
             </View>
@@ -35,7 +40,7 @@ const Item = ({ item }) => {
           {item.description && (
             <Text
               style={{
-                color: item.color,
+                color: colorText,
                 flexBasis: '100%',
                 flexWrap: 'wrap',
               }}>
@@ -53,44 +58,44 @@ const Item = ({ item }) => {
         <ButtonStyled onPress={() => Actions.Question()}>
           <Iconn
             name="edit"
-            color={item.color}
+            color={colorText}
             size={22}
             style={{ marginRight: 15, marginLeft: 15, flexBasis: '15%' }}
           />
-          <TextStyled style={{ color: item.color, marginTop: 5 }}>
+          <TextStyled style={{ color: colorText, marginTop: 5 }}>
             Resolver
           </TextStyled>
         </ButtonStyled>
         <ButtonStyled onPress={() => Actions.ResultSimulate()}>
           <Iconn
             name="spell-check"
-            color={item.color}
+            color={colorText}
             size={22}
             style={{ marginRight: 15, marginLeft: 15, flexBasis: '15%' }}
           />
-          <TextStyled style={{ color: item.color, marginTop: 5 }}>
+          <TextStyled style={{ color: colorText, marginTop: 5 }}>
             Resultado
           </TextStyled>
         </ButtonStyled>
         <ButtonStyled onPress={() => Actions.Ranking()}>
           <Iconn
             name="random"
-            color={item.color}
+            color={colorText}
             size={22}
             style={{ marginRight: 15, marginLeft: 15, flexBasis: '15%' }}
           />
-          <TextStyled style={{ color: item.color, marginTop: 5 }}>
+          <TextStyled style={{ color: colorText, marginTop: 5 }}>
             Ranking
           </TextStyled>
         </ButtonStyled>
         <ButtonStyled onPress={() => Actions.Gabarite()}>
           <Iconn
             name="question"
-            color={item.color}
+            color={colorText}
             size={22}
             style={{ marginRight: 15, marginLeft: 15, flexBasis: '15%' }}
           />
-          <TextStyled style={{ color: item.color, marginTop: 5 }}>
+          <TextStyled style={{ color: colorText, marginTop: 5 }}>
             Gabarito
           </TextStyled>
         </ButtonStyled>
