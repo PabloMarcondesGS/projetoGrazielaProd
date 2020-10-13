@@ -8,6 +8,7 @@ import { View } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage'
 import { Text, Header, Left, Button } from 'native-base'
 import { PieChart } from 'react-native-chart-kit'
+import { VictoryPie } from 'victory-native'
 import Iconn from 'react-native-vector-icons/FontAwesome'
 
 import { onSubjects } from '../../store/actions/subjects'
@@ -22,6 +23,8 @@ const ResultSimulate = ({ subject, setSubjects }) => {
   const [loading, setLoading] = useState(false)
   const [question, setQuestion] = useState({})
   const [data, setData] = useState([])
+  const [correctsData, setCorrectsData] = useState([])
+  const [wrongsData, setWrongsData] = useState([])
   const [email, setEmail] = useState('')
   const [rankingData, setRankingData] = useState('')
 
@@ -66,15 +69,16 @@ const ResultSimulate = ({ subject, setSubjects }) => {
   useEffect(() => {
     setLoading(true)
     database()
-      .ref('/simulate')
+      .ref('/question_result')
       .once('value', snapshot => {
+        setLoading(true)
         if (email) {
           const updatedSubjects = map(snapshot.val(), x => x)
           const values = updatedSubjects.filter(
             val => val.simulate === subject.name && val.user === email
           )
 
-          const valuesRanking = updatedSubjects.filter(
+          const valuesRanking = values.filter(
             val => val.simulate === subject.name
           )
           var sorted = valuesRanking.slice().sort(function(a, b) {
@@ -89,9 +93,12 @@ const ResultSimulate = ({ subject, setSubjects }) => {
           setSubjects(values)
 
           if (values && values.length) {
-            let max = values.reduce(function(a, b) {
-              return Math.max(a.corrects, b.corrects)
-            })
+            let max = Math.max.apply(
+              Math,
+              values.map(function(o) {
+                return o.corrects
+              })
+            )
             if (!max || max.corrects) {
               max = max.corrects
             }
@@ -104,37 +111,22 @@ const ResultSimulate = ({ subject, setSubjects }) => {
             // const indexrank = ranks.indexOf(1)
             const indexValue = valuesRanking.map(e => e.corrects).indexOf(max)
             setRankingData(ranks[indexValue])
-
             if (valueCorrect) {
+              setLoading(true)
+              setCorrectsData(valueCorrect.corrects)
+              setWrongsData(valueCorrect.wrongs)
               setData([
-                {
-                  name: 'Erros',
-                  awnsers:
-                    valueCorrect && valueCorrect.wrongs
-                      ? valueCorrect.wrongs
-                      : 0,
-                  color: 'red',
-                  legendFontColor: colorText,
-                  legendFontSize: 12,
-                },
-                {
-                  name: 'Acertos',
-                  awnsers:
-                    valueCorrect && valueCorrect.corrects
-                      ? valueCorrect.corrects
-                      : 0,
-                  color: 'green',
-                  legendFontColor: colorText,
-                  legendFontSize: 12,
-                },
+                { x: " ", y: valueCorrect.corrects },
+                { x: " ", y: valueCorrect.wrongs },
               ])
+              setLoading(false)
             }
           }
-
-          setLoading(false)
         }
+        setLoading(false)
       })
-  }, [subject, email, setSubjects, colorText])
+      setLoading(false)
+  }, [subject, email, setSubjects, colorText, setData])
 
   const chartConfig = {
     backgroundGradientFrom: '#1E2923',
@@ -146,7 +138,7 @@ const ResultSimulate = ({ subject, setSubjects }) => {
     barPercentage: 0.5,
     useShadowColorFromDataset: false // optional
   }
-  return loading ? (
+  return loading ? !data && data.length === 0 && (
     <ActivityIndicator style={styles.loader} />
   ) : question ? (
     <View style={{ ...styles.viewmenu, backgroundColor: back }}>
@@ -209,17 +201,46 @@ const ResultSimulate = ({ subject, setSubjects }) => {
                   fontSize: 17,
                   flexWrap: 'wrap',
                 }}>
-                Simulado Concluído
+                Simulado Concluído, gráfico de seu melhor resultado:
               </Text>
-              <PieChart
-                data={data}
-                width={Dimensions.get('window').width}
-                height={200}
-                chartConfig={chartConfig}
-                accessor="awnsers"
-                backgroundColor="transparent"
-                absolute
-              />
+              <View style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+                <VictoryPie
+                  data={data}
+                  width={220}
+                  height={220}
+                  innerRadius={50}
+                  colorScale={["green", "red" ]}
+                  style={{
+                      labels: {
+                        fill: colorText, fontSize: 1, padding:0
+                      }
+                  }}
+                />
+                <View>
+                  <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start'}}>
+                    <Text style={{color: 'green', fontSize: 24, marginTop: 6}}>* </Text>
+                    <Text style={{color: colorText}}>Acertos: {correctsData}</Text>
+                  </View>
+                  <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start'}}>
+                    <Text style={{color: 'red', fontSize: 24, marginTop: 6}}>* </Text>
+                    <Text style={{color: colorText}}>Erros: {wrongsData}</Text>
+                  </View>
+                </View>
+              </View>
+              <Text
+                style={{
+                  color: colorText,
+                  width: '100%',
+                  textAlign: 'center',
+                  fontSize: 17,
+                  flexWrap: 'wrap',
+                }}>
+                Ultimo resultado
+              </Text>
               <Text
                 style={{
                   color: colorText,

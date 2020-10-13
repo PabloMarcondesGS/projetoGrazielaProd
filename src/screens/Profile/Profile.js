@@ -1,32 +1,52 @@
-import React, { Component, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   StyleSheet,
   Text,
   View,
   Image,
-  FlatList,
   ScrollView,
 } from 'react-native'
 import {
   Header,
   Body,
-  Title,
   Left,
   Right,
   Icon,
   Button,
-  Alert,
 } from 'native-base'
 import { Actions } from 'react-native-router-flux'
 
-export default class Profile extends Component {
-  render() {
+const Profile = () =>  {
+  const [back, setBack] = useState('#353A3E')
+  const [colorText, setColorText] = useState('#353A3E')
+  useEffect(() => {
+    async function getData() {
+      try {
+        const value = await AsyncStorage.getItem('@background:marcosmoraes')
+        const valueText = await AsyncStorage.getItem(
+          '@background:marcosmoraestext'
+        )
+        if (valueText) {
+          setColorText(valueText)
+        }
+        if (value !== null) {
+          setBack(value)
+        }
+      } catch (e) {
+        // error reading value
+      }
+    }
+    getData()
+  }, [])
     return (
       <View style={styles.container}>
         <Header style={{ backgroundColor: '#353A3E' }}>
           <Left>
             <Button transparent onPress={() => Actions.Home()}>
               <Icon name="arrow-back" />
+              <Text style={{ color: colorText, fontSize: 17, marginLeft: 10 }}>
+                Sobre
+              </Text>
             </Button>
           </Left>
           <Body />
@@ -80,7 +100,6 @@ export default class Profile extends Component {
         </ScrollView>
       </View>
     )
-  }
 }
 
 const styles = StyleSheet.create({
@@ -105,7 +124,11 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   body: {
-    marginTop: 120,
+    marginTop: 180,
+    borderWidth: 1,
+    borderColor: '#e6c315',
+    borderRadius: 10,
+    margin: 20,
   },
   bodyContent: {
     alignItems: 'center',
@@ -130,3 +153,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 })
+
+export default Profile

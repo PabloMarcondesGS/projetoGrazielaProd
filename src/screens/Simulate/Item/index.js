@@ -1,39 +1,49 @@
-import React from 'react'
-import { Text, View } from 'react-native'
-import Questions from './Questions'
+/* eslint-disable prettier/prettier */
+/* eslint-disable react-native/no-inline-styles */
+import React, {useEffect, useState} from 'react'
+import { Text, View} from 'react-native'
+import { Actions } from 'react-native-router-flux'
 
-import { ViewStyled, FlatListStyled } from './styles'
+import { ViewStyled, ButtonStyled, TextStyled } from './styles'
+import Iconn from 'react-native-vector-icons/FontAwesome'
+import AsyncStorage from '@react-native-community/async-storage'
 
-const Item = ({ item, email, colorText, back }) => {
-  return (
+const Questions = ({ item, colorText, email }) => {
+  const [isSolved, setIsSolved] = useState(false)
+  const [isSolvedIndex, setIsSolvedIndex] = useState()
+  useEffect(() => {
+    async function getData(){
+      if (item && item.name){
+        const indexAsync = await AsyncStorage.getItem(
+          `@background:marcosmoraesquestionfinished:${item.name}`
+        )
+        setIsSolvedIndex(indexAsync)
+        setIsSolved(true)
+      } else {
+        setIsSolved(false)
+      }
+    }
+    getData()
+  }, [item])
+  return item ? (
     <ViewStyled>
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <View style={{ flexDirection: 'column', flexBasis: '100%' }}>
-          <Text
-            style={{
-              color: colorText,
-              flexBasis: '100%',
-              flexWrap: 'wrap',
-              textAlign: 'center',
-              paddingTop: 20,
-            }}>
-            {item.name}
-          </Text>
-          {item.subcategory ? (
-            <View style={{ flex: 1 }}>
-              <FlatListStyled
-                data={item.subcategory}
-                renderItem={({ item }) => (
-                  <Questions
-                    item={item}
-                    email={email}
-                    colorText={colorText}
-                    back={back}
-                  />
-                )}
-                keyExtractor={item => (item ? item.name : null)}
-              />
-            </View>
+        <Iconn
+          name="file"
+          color={colorText}
+          size={28}
+          style={{ marginRight: 15, marginLeft: 15, flexBasis: '15%' }}
+        />
+        <View style={{ flexDirection: 'column', flexBasis: '85%' }}>
+          {item.name ? (
+            <Text
+              style={{
+                color: colorText,
+                flexBasis: '100%',
+                flexWrap: 'wrap',
+              }}>
+              {item.name ? item.name : ''}
+            </Text>
           ) : (
             <View />
           )}
@@ -49,13 +59,14 @@ const Item = ({ item, email, colorText, back }) => {
           )}
         </View>
       </View>
-      {/* <View
+      <View
         style={{
           flexDirection: 'row',
           marginTop: 24,
           justifyContent: 'space-between',
         }}>
-        <ButtonStyled onPress={() => Actions.Question()}>
+        <ButtonStyled
+          onPress={() => Actions.Question({ subject: item, email })}>
           <Iconn
             name="edit"
             color={colorText}
@@ -66,18 +77,21 @@ const Item = ({ item, email, colorText, back }) => {
             Resolver
           </TextStyled>
         </ButtonStyled>
-        <ButtonStyled onPress={() => Actions.ResultSimulate()}>
-          <Iconn
-            name="spell-check"
-            color={colorText}
-            size={22}
-            style={{ marginRight: 15, marginLeft: 15, flexBasis: '15%' }}
-          />
-          <TextStyled style={{ color: colorText, marginTop: 5 }}>
-            Resultado
-          </TextStyled>
-        </ButtonStyled>
-        <ButtonStyled onPress={() => Actions.Ranking()}>
+        {isSolved && isSolvedIndex ? (
+          <ButtonStyled
+            onPress={() => Actions.ResultSimulate({ subject: item, email })}>
+            <Iconn
+              name="spell-check"
+              color={colorText}
+              size={22}
+              style={{ marginRight: 15, marginLeft: 15, flexBasis: '15%' }}
+            />
+            <TextStyled style={{ color: colorText, marginTop: 5 }}>
+              Resultado
+            </TextStyled>
+          </ButtonStyled>
+        ) : <View />}
+        <ButtonStyled onPress={() => Actions.Ranking({ subject: item, email })}>
           <Iconn
             name="random"
             color={colorText}
@@ -88,20 +102,11 @@ const Item = ({ item, email, colorText, back }) => {
             Ranking
           </TextStyled>
         </ButtonStyled>
-        <ButtonStyled onPress={() => Actions.Gabarite()}>
-          <Iconn
-            name="question"
-            color={colorText}
-            size={22}
-            style={{ marginRight: 15, marginLeft: 15, flexBasis: '15%' }}
-          />
-          <TextStyled style={{ color: colorText, marginTop: 5 }}>
-            Gabarito
-          </TextStyled>
-        </ButtonStyled>
-      </View> */}
+      </View>
     </ViewStyled>
+  ) : (
+    <View />
   )
 }
 
-export default Item
+export default Questions

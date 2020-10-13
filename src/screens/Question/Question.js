@@ -30,6 +30,7 @@ const Question = ({ subject, setSubjects}) => {
   const [questionIndex, setQuestionIndex] = useState(0)
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
+
   const onSolveClick = useCallback(async option => {
     setLoading(true)
     setIsSolved(true)
@@ -85,7 +86,7 @@ const Question = ({ subject, setSubjects}) => {
   const finishSimulate = useCallback(async () => {
     try {
       database()
-        .ref('/simulate')
+        .ref('/question_result')
         .push({
           datetime: new Date(),
           simulate: subject.name,
@@ -97,6 +98,7 @@ const Question = ({ subject, setSubjects}) => {
       Alert.alert('Simulado finalizado com sucesso')
       await AsyncStorage.removeItem(`@background:marcosmoraesquestionindex:${subject.name}`)
       await AsyncStorage.removeItem(`@background:marcosmoraesquestionname:${subject.name}`)
+      await AsyncStorage.setItem(`@background:marcosmoraesquestionfinished:${subject.name}`, subject.name)
 
       Actions.ResultSimulate({subject, email})
     } catch (error){
@@ -175,7 +177,7 @@ const Question = ({ subject, setSubjects}) => {
       }
     }
     getData()
-  }, [subject.name])
+  }, [subject])
 
   // useEffect(onLoad, [])
 
@@ -260,7 +262,7 @@ const Question = ({ subject, setSubjects}) => {
                   {question.options && question.options.map(option => (
                     <ButtonStyled
                       onPress={() => onSolveClick(option)}
-                      style={{backgroundColor: returnColor(option), color: 'white',
+                      style={{backgroundColor: returnColor(option),
                          borderWidth: 1, borderColor: '#e6c315' }}
                       disabled={isSolved}
                     >
@@ -268,7 +270,7 @@ const Question = ({ subject, setSubjects}) => {
                         style={{
                           width: '100%',
                           textAlign: 'center',
-                          color: 'white',
+                          color: colorText,
                         }}>
                         {option.description}
                       </Text>
@@ -297,19 +299,20 @@ const Question = ({ subject, setSubjects}) => {
                           <Text style={{marginTop: 24, fontSize: 17, color: 'green', width: '100%', textAlign: 'center'}}>Acertou</Text>
                         )
                       }
+                      {question.explanation && (
+                        <ButtonStyled>
+                          <Text
+                            style={{
+                              width: '100%',
+                              textAlign: 'center',
+                              color: colorText,
+                              flexWrap: 'wrap',
+                            }}>
+                            {question.explanation}
+                          </Text>
+                        </ButtonStyled>
+                      )}
                       <Text style={{fontSize: 17,color: colorText}}>Explicação:</Text>
-                      {}
-                      <ButtonStyled>
-                        <Text
-                          style={{
-                            width: '100%',
-                            textAlign: 'center',
-                            color: colorText,
-                            flexWrap: 'wrap',
-                          }}>
-                          {question.explanation}
-                        </Text>
-                      </ButtonStyled>
                     </>
                   ) : (
                     <View />

@@ -1,34 +1,34 @@
-/* eslint-disable react-native/no-inline-styles */
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
+import {  ScrollView } from 'react-native'
 import { Actions } from 'react-native-router-flux'
+import { database } from 'firebase'
+import { map } from 'lodash'
 import { View } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage'
 import { Text, Header, Left, Button } from 'native-base'
+import Pdf from 'react-native-pdf';
 
 import { onSubjects } from '../../store/actions/subjects'
 import { onIsAuth } from '../../store/actions/authorization'
-import styles, { FlatListStyled } from './styles'
-import Item from './Item'
+import styles from './styles'
 import Iconn from 'react-native-vector-icons/FontAwesome'
-
-const Questions = ({ subjects }) => {
+const ShowPdf = ({ subjects, setSubjects, setIsAuth }) => {
   const [back, setBack] = useState('#353A3E')
   const [colorText, setColorText] = useState('#353A3E')
-  const [email, setEmail] = useState('')
+
+  const onLoad = () => {
+    database()
+      .ref('/subjects')
+      .once('value', snapshot => {
+        const updatedSubjects = map(snapshot.val(), x => x)
+        setSubjects(updatedSubjects)
+      })
+  }
 
   useEffect(() => {
     async function getData() {
       try {
-        const emailAsync = await AsyncStorage.getItem(
-          '@background:marcosmoraesemail'
-        )
-        if (emailAsync) {
-          setEmail(emailAsync)
-        } else {
-          Actions.SignIn()
-          return
-        }
         const value = await AsyncStorage.getItem('@background:marcosmoraes')
         const valueText = await AsyncStorage.getItem(
           '@background:marcosmoraestext'
@@ -46,33 +46,40 @@ const Questions = ({ subjects }) => {
     getData()
   }, [])
 
+  useEffect(onLoad, [])
+
+  const source = {uri: 'https://firebasestorage.googleapis.com/v0/b/marcos-moraes.appspot.com/o/legislacao.pdf?alt=media&token=8545e5a3-dc04-424e-b685-cb78a65541c3' ,cache:true};
+
   return (
     <View style={{ ...styles.viewmenu, backgroundColor: back }}>
       <Header style={{ backgroundColor: back }}>
         <Left style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-          <Button transparent onPress={() => Actions.Home()}>
+          <Button transparent onPress={() => Actions.pop()}>
             <Iconn name="arrow-left" color={colorText} size={17} />
           </Button>
           <Text style={{ color: colorText, fontSize: 17, marginLeft: 10 }}>
-            Questões
+            Material complementar
           </Text>
         </Left>
       </Header>
       <View style={styles.containerText}>
-        <View style={{ flex: 1 }}>
-          <FlatListStyled
-            data={subjects}
-            renderItem={({ item }) => (
-              <Item
-                item={item}
-                email={email}
-                colorText={colorText}
-                back={back}
-              />
-            )}
-            keyExtractor={item => item.id}
-          />
-        </View>
+        <ScrollView contentContainerStyle={{ flex: 1 }}>
+          <Pdf
+            source={source}
+            onLoadComplete={(numberOfPages,filePath)=>{
+                console.log(`number of pages: ${numberOfPages}`);
+            }}
+            onPageChanged={(page,numberOfPages)=>{
+                console.log(`current page: ${page}`);
+            }}
+            onError={(error)=>{
+                console.log(error);
+            }}
+            onPressLink={(uri)=>{
+                console.log(`Link presse: ${uri}`)
+            }}
+            style={styles.pdf}/>
+        </ScrollView>
       </View>
     </View>
   )
@@ -88,4 +95,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Questions)
+)(ShowPdf)

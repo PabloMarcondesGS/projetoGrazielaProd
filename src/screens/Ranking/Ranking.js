@@ -53,7 +53,7 @@ const Ranking = ({ subject, setSubjects, setIsAuth }) => {
   useEffect(() => {
     setLoading(true)
     database()
-      .ref('/simulate')
+      .ref('/question_result')
       .once('value', snapshot => {
         if (email) {
           const updatedSubjects = map(snapshot.val(), x => x)
@@ -72,13 +72,13 @@ const Ranking = ({ subject, setSubjects, setIsAuth }) => {
           })
           setData(sortedArr)
 
-          setQuestions(updatedSubjects)
-          setQuestion(updatedSubjects[updatedSubjects.length - 1])
+          setQuestions(valuesRanking)
+          setQuestion(valuesRanking[valuesRanking.length - 1])
         }
       })
   }, [subject, email, setSubjects, colorText])
 
-  return (
+  return question ? (
     <View style={{ ...styles.viewmenu, backgroundColor: back }}>
       <Header style={{ backgroundColor: back }}>
         <Left style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
@@ -169,6 +169,22 @@ const Ranking = ({ subject, setSubjects, setIsAuth }) => {
         </View>
       </ScrollView>
     </View>
+  ) : (
+    <>
+      <Header style={{ backgroundColor: back }}>
+          <Left style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+            <Button transparent onPress={() => Actions.pop()}>
+              <Iconn name="arrow-left" color={colorText} size={17} />
+            </Button>
+            <Text style={{ color: colorText, fontSize: 17, marginLeft: 10 }}>
+              Ranking
+            </Text>
+          </Left>
+        </Header>
+      <View style={{ backgroundColor: back, flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Text style={{ color: colorText, fontSize: 17, marginLeft: 10 }}>Sem dados para este simulado</Text>
+      </View>
+    </>
   )
 }
 

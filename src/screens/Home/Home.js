@@ -13,9 +13,6 @@ import { onIsAuth } from '../../store/actions/authorization'
 import styles from './styles'
 import Iconn from 'react-native-vector-icons/FontAwesome'
 
-const background = { backgroundColor: '#353A3E' }
-const color = { color: '#BDC2C6' }
-
 const onBack = () => {
   Alert.alert(
     'Deseja sair do aplicativo?',
@@ -90,15 +87,6 @@ const Home = ({ subjects, setSubjects, setIsAuth }) => {
   useEffect(() => {
     async function getData() {
       try {
-        const emailAsync = await AsyncStorage.getItem(
-          '@background:marcosmoraesemail'
-        )
-        if (emailAsync) {
-          setEmail(emailAsync)
-        } else {
-          Actions.SignIn()
-          return
-        }
         const value = await AsyncStorage.getItem('@background:marcosmoraes')
         const valueText = await AsyncStorage.getItem(
           '@background:marcosmoraestext'
@@ -173,9 +161,9 @@ const Home = ({ subjects, setSubjects, setIsAuth }) => {
       <View style={styles.menubutton}>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => Actions.Legislation()}>
+          onPress={() => Actions.Tips()}>
           <Iconn name="copy" size={30} color="#FFFFFF" />
-          <Text style={styles.icontext}>Legislação</Text>
+          <Text style={styles.icontext}>Dicas</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.button}
@@ -195,17 +183,13 @@ const Home = ({ subjects, setSubjects, setIsAuth }) => {
         </TouchableOpacity>
         <TouchableOpacity
           style={{ ...styles.button, marginTop: 14 }}
-          onPress={() => Actions.Simulate({ email })}>
+          onPress={() => Actions.Simulate()}>
           <Iconn name="check" size={30} color="#FFFFFF" />
           <Text style={styles.icontextTeacher}>Simulados</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={{ ...styles.button, marginTop: 14 }}
-          onPress={() => {
-            Linking.openURL(
-              'https://drive.google.com/u/0/uc?id=1G4PbxJdsQ-DzGXo9KCcQuUoApPyjbydA&export=download'
-            )
-          }}>
+          onPress={() => Actions.ShowPdf()}>
           <Iconn name="file" size={30} color="#FFFFFF" />
           <Text style={styles.icontext}>Material</Text>
         </TouchableOpacity>
@@ -214,7 +198,7 @@ const Home = ({ subjects, setSubjects, setIsAuth }) => {
           style={{ ...styles.button, marginTop: 14 }}
           onPress={() => {
             BackHandler.removeEventListener('hardwareBackPress', onBack)
-            Actions.About()
+            Actions.Profile()
           }}>
           <Iconn name="question" size={30} color="#FFFFFF" />
           <Text style={styles.icontext}>Sobre</Text>

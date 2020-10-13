@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
-import { ActivityIndicator } from 'react-native'
+import React, {useEffect} from 'react'
+import { ActivityIndicator, StatusBar } from 'react-native'
 import { PersistGate } from 'redux-persist/integration/react'
 import firebase from 'firebase'
 import { Provider } from 'react-redux'
@@ -20,7 +20,7 @@ const App = () => {
         storageBucket: 'marcos-moraes.appspot.com',
         messagingSenderId: '329287441947',
         appId: '1:329287441947:web:aab841672143339920a2be',
-        measurementId: 'G-51E3Z1LPZS',
+        measurementId: 'G-51E3Z1LPZS'
       })
   }
 
@@ -28,6 +28,10 @@ const App = () => {
 
   return (
     <Provider store={store}>
+      <StatusBar
+        backgroundColor="#353A3E'"
+        barStyle={'light-content'}
+      />
       <PersistGate loading={<ActivityIndicator />} persistor={persistor}>
         <Routes />
       </PersistGate>

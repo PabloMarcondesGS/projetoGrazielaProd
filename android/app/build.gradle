@@ -129,6 +129,14 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    packagingOptions {
+       pickFirst 'lib/x86/libc++_shared.so'
+       pickFirst 'lib/x86_64/libjsc.so'
+       pickFirst 'lib/arm64-v8a/libjsc.so'
+       pickFirst 'lib/arm64-v8a/libc++_shared.so'
+       pickFirst 'lib/x86_64/libc++_shared.so'
+       pickFirst 'lib/armeabi-v7a/libc++_shared.so'
+    }
     defaultConfig {
         applicationId "com.marcosmoraes"
         minSdkVersion rootProject.ext.minSdkVersion
@@ -190,7 +198,7 @@ android {
 }
 
 dependencies {
-    implementation project(':react-native-svg')
+    implementation project(':react-native-vector-icons')
     implementation project(':@react-native-community_async-storage')
     implementation project(':react-native-fbsdk')
     implementation fileTree(dir: "libs", include: ["*.jar"])

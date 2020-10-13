@@ -1,10 +1,12 @@
-/* eslint-disable react-native/no-inline-styles */
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
+import { Alert, BackHandler, ScrollView } from 'react-native'
 import { Actions } from 'react-native-router-flux'
-import { View } from 'react-native'
+import { database } from 'firebase'
+import { map } from 'lodash'
+import { View, Image } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage'
-import { Text, Header, Left, Button } from 'native-base'
+import { Text, Header, Left, Button, Icon } from 'native-base'
 
 import { onSubjects } from '../../store/actions/subjects'
 import { onIsAuth } from '../../store/actions/authorization'
@@ -12,23 +14,26 @@ import styles, { FlatListStyled } from './styles'
 import Item from './Item'
 import Iconn from 'react-native-vector-icons/FontAwesome'
 
-const Questions = ({ subjects }) => {
+const Tips = ({ subjects, setIsAuth }) => {
   const [back, setBack] = useState('#353A3E')
   const [colorText, setColorText] = useState('#353A3E')
-  const [email, setEmail] = useState('')
+  const [tips, setTips] = useState()
+
+  const onLoad = () => {
+    database()
+      .ref('/tips')
+      .once('value', snapshot => {
+        const updatedSubjects = map(snapshot.val(), x => x)
+        var sorted = updatedSubjects.slice().sort(function(a, b) {
+          return b.order + a.order
+        })
+        setTips(sorted)
+      })
+  }
 
   useEffect(() => {
     async function getData() {
       try {
-        const emailAsync = await AsyncStorage.getItem(
-          '@background:marcosmoraesemail'
-        )
-        if (emailAsync) {
-          setEmail(emailAsync)
-        } else {
-          Actions.SignIn()
-          return
-        }
         const value = await AsyncStorage.getItem('@background:marcosmoraes')
         const valueText = await AsyncStorage.getItem(
           '@background:marcosmoraestext'
@@ -46,30 +51,26 @@ const Questions = ({ subjects }) => {
     getData()
   }, [])
 
+  useEffect(onLoad, [])
+
   return (
     <View style={{ ...styles.viewmenu, backgroundColor: back }}>
       <Header style={{ backgroundColor: back }}>
         <Left style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-          <Button transparent onPress={() => Actions.Home()}>
+          <Button transparent onPress={() => Actions.pop()}>
             <Iconn name="arrow-left" color={colorText} size={17} />
           </Button>
           <Text style={{ color: colorText, fontSize: 17, marginLeft: 10 }}>
-            Questões
+            Dicas
           </Text>
         </Left>
       </Header>
       <View style={styles.containerText}>
         <View style={{ flex: 1 }}>
           <FlatListStyled
-            data={subjects}
-            renderItem={({ item }) => (
-              <Item
-                item={item}
-                email={email}
-                colorText={colorText}
-                back={back}
-              />
-            )}
+            data={tips}
+            renderItem={({item}) => <Item colorText={colorText}
+            back={back} item={item} />}
             keyExtractor={item => item.id}
           />
         </View>
@@ -82,10 +83,10 @@ const mapStateToProps = ({ subjects }) => ({ subjects })
 
 const mapDispatchToProps = dispatch => ({
   setSubjects: items => dispatch(onSubjects(items)),
-  setIsAuth: isAuth => dispatch(onIsAuth(isAuth))
+  setIsAuth: isAuth => dispatch(onIsAuth(isAuth)),
 })
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Questions)
+)(Tips)

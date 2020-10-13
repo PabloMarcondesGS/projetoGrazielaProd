@@ -1,12 +1,12 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
-import { Alert, BackHandler, ScrollView } from 'react-native'
 import { Actions } from 'react-native-router-flux'
+import { View } from 'react-native'
+import AsyncStorage from '@react-native-community/async-storage'
+import { Text, Header, Left, Button } from 'native-base'
 import { database } from 'firebase'
 import { map } from 'lodash'
-import { View, Image } from 'react-native'
-import AsyncStorage from '@react-native-community/async-storage'
-import { Text, Header, Left, Button, Icon } from 'native-base'
 
 import { onSubjects } from '../../store/actions/subjects'
 import { onIsAuth } from '../../store/actions/authorization'
@@ -14,10 +14,24 @@ import styles, { FlatListStyled } from './styles'
 import Item from './Item'
 import Iconn from 'react-native-vector-icons/FontAwesome'
 
-const Simulate = ({ subjects }) => {
+const Simulate = () => {
   const [back, setBack] = useState('#353A3E')
   const [colorText, setColorText] = useState('#353A3E')
   const [email, setEmail] = useState('')
+  const [simulates, setSimulates] = useState([])
+
+  const onLoad = () => {
+    database()
+      .ref('/simulates/subjects')
+      .once('value', snapshot => {
+        const updatedSubjects = map(snapshot.val(), x => x)
+        setSimulates(updatedSubjects)
+      })
+  }
+
+  useEffect(()=>{
+    onLoad()
+  },[])
 
   useEffect(() => {
     async function getData() {
@@ -63,7 +77,7 @@ const Simulate = ({ subjects }) => {
       <View style={styles.containerText}>
         <View style={{ flex: 1 }}>
           <FlatListStyled
-            data={subjects}
+            data={simulates}
             renderItem={({ item }) => (
               <Item
                 item={item}
@@ -72,7 +86,6 @@ const Simulate = ({ subjects }) => {
                 back={back}
               />
             )}
-            email="rodrigoaraujo990@"
             keyExtractor={item => item.id}
           />
         </View>

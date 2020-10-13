@@ -8,14 +8,14 @@ export const FlatListStyled = styled.FlatList`
 const styles = StyleSheet.create({
   typography: {
     marginVertical: 20,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   viewmenu: {
-    flex: 1
+    flex: 1,
   },
   config: {
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   image: {
     width: '70%',
@@ -23,11 +23,11 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginRight: 10,
     marginLeft: 10,
-    borderRadius: 20
+    borderRadius: 20,
   },
   text: {
     fontSize: 20,
-    marginTop: 10
+    marginTop: 10,
   },
   containerText: {
     flexDirection: 'row',
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     flexWrap: 'wrap',
     padding: 20,
-    flex: 1
+    flex: 1,
   },
   button: {
     backgroundColor: '#666',
@@ -46,27 +46,27 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#e6c315',
+    borderColor: '#e6c315'
   },
   icontext: {
-    color: '#fff'
+    color: '#fff',
   },
   icontextTeacher: {
     color: '#fff',
-    fontSize: 14
+    fontSize: 14,
   },
   viewsocial: {
     flexDirection: 'row',
     marginTop: 20,
     justifyContent: 'space-around',
     marginLeft: 100,
-    marginRight: 100
+    marginRight: 100,
   },
   imageIcon: {
     width: 30,
     height: 30,
-    marginBottom: 5
-  }
+    marginBottom: 5,
+  },
 })
 
 export default styles

@@ -15,7 +15,7 @@ const Questions = ({ item, colorText, email }) => {
     async function getData(){
       if (item && item.name){
         const indexAsync = await AsyncStorage.getItem(
-          `@background:marcosmoraesquestionindex:${item.name}`
+          `@background:marcosmoraesquestionfinished:${item.name}`
         )
         setIsSolvedIndex(indexAsync)
         setIsSolved(true)

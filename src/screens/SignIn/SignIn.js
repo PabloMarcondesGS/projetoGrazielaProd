@@ -26,8 +26,13 @@ const action = { backgroundColor: '#e6c315' }
 // }
 
 const SignIn = ({ setIsAuth }) => {
+
+  const formRef = useRef(null)
+  const [loading, setLoading] = useState(false)
+
   useEffect(() => {
     async function getData() {
+      setLoading(true)
       try {
         const emailAsync = await AsyncStorage.getItem(
           '@background:marcosmoraesemail'
@@ -35,8 +40,10 @@ const SignIn = ({ setIsAuth }) => {
         if (emailAsync) {
           Actions.Home()
         }
+        setLoading(false)
       } catch (e) {
         // error reading value
+        setLoading(false)
       }
     }
     getData()
@@ -77,9 +84,6 @@ const SignIn = ({ setIsAuth }) => {
     )
   }
 
-  const formRef = useRef(null)
-  const [loading, setLoading] = useState(false)
-
   const handleSignIn = async data => {
     try {
       setLoading(true)
@@ -98,7 +102,9 @@ const SignIn = ({ setIsAuth }) => {
     }
   }
 
-  return (
+  return loading ? (
+    <ActivityIndicator style={styles.loader} />
+  ) : (
     <Container style={[styles.container]}>
       <Image
         source={require('../../img/marcosmoraes.png')}
