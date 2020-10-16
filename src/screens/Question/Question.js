@@ -17,7 +17,8 @@ import { onIsAuth } from '../../store/actions/authorization'
 import styles, { ButtonStyled, ButtonStyledPrevNext } from './styles'
 
 import { shuffle } from '../../utils'
-const Question = ({ subject, setSubjects}) => {
+const Question = ({ subject, setSubjects, isQuestion}) => {
+
   const [back, setBack] = useState('#353A3E')
   const [colorText, setColorText] = useState('#353A3E')
   const [questions, setQuestions] = useState([])
@@ -299,20 +300,23 @@ const Question = ({ subject, setSubjects}) => {
                           <Text style={{marginTop: 24, fontSize: 17, color: 'green', width: '100%', textAlign: 'center'}}>Acertou</Text>
                         )
                       }
-                      {question.explanation && (
-                        <ButtonStyled>
-                          <Text
-                            style={{
-                              width: '100%',
-                              textAlign: 'center',
-                              color: colorText,
-                              flexWrap: 'wrap',
-                            }}>
-                            {question.explanation}
-                          </Text>
-                        </ButtonStyled>
-                      )}
-                      <Text style={{fontSize: 17,color: colorText}}>Explicação:</Text>
+                      {/* {console.log(question.explanation)}
+                      {question.explanation && !isQuestion ? (
+                        <>
+                          <Text style={{fontSize: 17,color: colorText}}>Explicação:</Text>
+                          <ButtonStyled>
+                            <Text
+                              style={{
+                                width: '100%',
+                                textAlign: 'center',
+                                color: colorText,
+                                flexWrap: 'wrap',
+                              }}>
+                              {question.explanation}
+                            </Text>
+                          </ButtonStyled>
+                        </>
+                      ) : <View />} */}
                     </>
                   ) : (
                     <View />
@@ -340,18 +344,16 @@ const Question = ({ subject, setSubjects}) => {
                     ) : (
                       <View />
                     )}
-                     {questionIndex > 0 ? (
-                      <ButtonStyled onPress={finishSimulate}>
-                        <Text
-                          style={{
-                            width: '100%',
-                            textAlign: 'center',
-                            color: colorText,
-                          }}>
-                          FINALIZAR
-                        </Text>
-                      </ButtonStyled>
-                     ) : <View />}
+                    <ButtonStyled onPress={finishSimulate}>
+                      <Text
+                        style={{
+                          width: '100%',
+                          textAlign: 'center',
+                          color: colorText,
+                        }}>
+                        FINALIZAR
+                      </Text>
+                    </ButtonStyled>
                   </View>
                 </View>
               ) : (

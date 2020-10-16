@@ -66,7 +66,7 @@ const Questions = ({ item, colorText, email }) => {
           justifyContent: 'space-between',
         }}>
         <ButtonStyled
-          onPress={() => Actions.Question({ subject: item, email })}>
+          onPress={() => Actions.Question({ subject: item, email, isQuestion: true })}>
           <Iconn
             name="edit"
             color={colorText}
@@ -79,7 +79,7 @@ const Questions = ({ item, colorText, email }) => {
         </ButtonStyled>
         {isSolved && isSolvedIndex ? (
           <ButtonStyled
-            onPress={() => Actions.ResultSimulate({ subject: item, email })}>
+            onPress={() => Actions.ResultSimulate({ subject: item, email, isQuestion: true })}>
             <Iconn
               name="spell-check"
               color={colorText}

@@ -16,7 +16,7 @@ import { onIsAuth } from '../../store/actions/authorization'
 import styles from './styles'
 import { shuffle } from '../../utils'
 
-const ResultSimulate = ({ subject, setSubjects }) => {
+const ResultSimulate = ({ subject, setSubjects, isQuestion }) => {
   const [back, setBack] = useState('#353A3E')
   const [colorText, setColorText] = useState('#353A3E')
   const [questions, setQuestions] = useState([])
@@ -261,16 +261,18 @@ const ResultSimulate = ({ subject, setSubjects }) => {
                 }}>
                 Erros: {question.wrongs} questões
               </Text>
-              <Text
-                style={{
-                  color: colorText,
-                  width: '100%',
-                  textAlign: 'center',
-                  fontSize: 17,
-                  flexWrap: 'wrap',
-                }}>
-                Posição: {rankingData} lugar
-              </Text>
+              {!isQuestion && (
+                <Text
+                  style={{
+                    color: colorText,
+                    width: '100%',
+                    textAlign: 'center',
+                    fontSize: 17,
+                    flexWrap: 'wrap',
+                  }}>
+                  Posição: {rankingData} lugar
+                </Text>
+              )}
             </ScrollView>
           </View>
         </View>

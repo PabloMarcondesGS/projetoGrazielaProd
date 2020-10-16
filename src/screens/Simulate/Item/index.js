@@ -65,21 +65,23 @@ const Questions = ({ item, colorText, email }) => {
           marginTop: 24,
           justifyContent: 'space-between',
         }}>
-        <ButtonStyled
-          onPress={() => Actions.Question({ subject: item, email })}>
-          <Iconn
-            name="edit"
-            color={colorText}
-            size={22}
-            style={{ marginRight: 15, marginLeft: 15, flexBasis: '15%' }}
-          />
-          <TextStyled style={{ color: colorText, marginTop: 5 }}>
-            Resolver
-          </TextStyled>
-        </ButtonStyled>
+        {!isSolvedIndex ? (
+          <ButtonStyled
+            onPress={() => Actions.Question({ subject: item, email, isQuestion: false })}>
+            <Iconn
+              name="edit"
+              color={colorText}
+              size={22}
+              style={{ marginRight: 15, marginLeft: 15, flexBasis: '15%' }}
+            />
+            <TextStyled style={{ color: colorText, marginTop: 5 }}>
+              Resolver
+            </TextStyled>
+          </ButtonStyled>
+        ) : <View />}
         {isSolved && isSolvedIndex ? (
           <ButtonStyled
-            onPress={() => Actions.ResultSimulate({ subject: item, email })}>
+            onPress={() => Actions.ResultSimulate({ subject: item, email, isQuestion: false })}>
             <Iconn
               name="spell-check"
               color={colorText}
