@@ -1,11 +1,11 @@
 {
   "name": "marcos-moraes",
-  "version": "0.0.1",
+  "version": "0.1.1",
   "private": true,
   "author": {
-    "name": "Janderson Constantino",
-    "email": "jandersonconstantino@gmail.com",
-    "url": "https://jandersonconstantino.com"
+    "name": "Rodrigo Araújo",
+    "email": "rodrigoaraujo990@gmail.com",
+    "url": "https://github.com/rodrigogaraujo"
   },
   "scripts": {
     "android": "react-native run-android",

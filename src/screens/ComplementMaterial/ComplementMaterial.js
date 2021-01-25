@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
-import { Alert, BackHandler, ScrollView } from 'react-native'
 import { Actions } from 'react-native-router-flux'
 import { database } from 'firebase'
 import { map } from 'lodash'
-import { View, Image } from 'react-native'
+import { View } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage'
 import { Text, Header, Left, Button, Icon } from 'native-base'
 
@@ -30,39 +29,17 @@ const ComplementMaterial = ({ subjects, setSubjects, setIsAuth }) => {
   const DATA = [
     {
       id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-      title: 'First Item',
-      description: 'Lei n° 12.132 de 04/12/2025',
-      color: colorText
+      title: 'Legislação',
+      description: '',
+      color: colorText,
+      link: 'https://firebasestorage.googleapis.com/v0/b/marcos-moraes.appspot.com/o/legislacao.pdf?alt=media&token=8545e5a3-dc04-424e-b685-cb78a65541c3'
     },
     {
-      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-      title: 'Second Item',
-      description: 'Lei n° 12.132 de 04/12/2025',
-      color: colorText
-    },
-    {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
-      title: 'Third Item',
-      description: 'Lei n° 12.132 de 04/12/2025',
-      color: colorText
-    },
-    {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28bc',
-      title: 'First Item',
-      description: 'Lei n° 12.132 de 04/12/2025',
-      color: colorText
-    },
-    {
-      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f64',
-      title: 'Second Item',
-      description: 'Lei n° 12.132 de 04/12/2025',
-      color: colorText
-    },
-    {
-      id: '58694a0f-3da1-471f-bd96-145571e29d73',
-      title: 'Third Item',
-      description: 'Lei n° 12.132 de 04/12/2025',
-      color: colorText
+      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb2332',
+      title: 'Tabela de reumos',
+      description: '',
+      color: colorText,
+      link: 'https://firebasestorage.googleapis.com/v0/b/marcos-moraes.appspot.com/o/pdf-tow.pdf?alt=media&token=e4b80e09-40ff-4e5c-95ed-aad633f4081a'
     },
   ]
 

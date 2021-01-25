@@ -1,5 +1,6 @@
 import React from 'react'
-import { Text, View } from 'react-native'
+import { Text, View, TouchableOpacity } from 'react-native'
+import { Actions } from 'react-native-router-flux'
 
 import { ViewStyled } from './styles'
 import Iconn from 'react-native-vector-icons/FontAwesome'
@@ -23,14 +24,16 @@ const Item = ({ item }) => {
           {item.description}
         </Text>
       </View>
-      <Iconn
-        name="chevron-right"
-        color={item.color}
-        size={15}
-        style={{
-          flexBasis: '8%'
-        }}
-      />
+      <TouchableOpacity onPress={() => Actions.ShowPdf({ link: item.link })}>
+        <Iconn
+          name="chevron-right"
+          color={item.color}
+          size={22}
+          style={{
+            flexBasis: '8%'
+          }}
+        />
+      </TouchableOpacity>
     </ViewStyled>
   )
 }

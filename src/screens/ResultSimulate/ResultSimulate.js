@@ -78,7 +78,7 @@ const ResultSimulate = ({ subject, setSubjects, isQuestion }) => {
             val => val.simulate === subject.name && val.user === email
           )
 
-          const valuesRanking = values.filter(
+          const valuesRanking = updatedSubjects.filter(
             val => val.simulate === subject.name
           )
           var sorted = valuesRanking.slice().sort(function(a, b) {
@@ -87,7 +87,6 @@ const ResultSimulate = ({ subject, setSubjects, isQuestion }) => {
           var ranks = valuesRanking.map(function(v) {
             return sorted.indexOf(v) + 1
           })
-
           setQuestions(values)
           setQuestion(values[values.length - 1])
           setSubjects(values)
@@ -110,6 +109,7 @@ const ResultSimulate = ({ subject, setSubjects, isQuestion }) => {
             )
             // const indexrank = ranks.indexOf(1)
             const indexValue = valuesRanking.map(e => e.corrects).indexOf(max)
+            
             setRankingData(ranks[indexValue])
             if (valueCorrect) {
               setLoading(true)

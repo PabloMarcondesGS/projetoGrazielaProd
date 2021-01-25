@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, { useEffect } from 'react'
 import { ActivityIndicator, StatusBar } from 'react-native'
 import { PersistGate } from 'redux-persist/integration/react'
 import firebase from 'firebase'
@@ -13,14 +13,14 @@ const App = () => {
   const onLoad = () => {
     !firebase.apps.length &&
       firebase.initializeApp({
-        apiKey: 'AIzaSyB783gFQP4OIHO5O5mGuv6S50Rk9Uodkew',
-        authDomain: 'marcos-moraes.firebaseapp.com',
-        databaseURL: 'https://marcos-moraes.firebaseio.com',
-        projectId: 'marcos-moraes',
-        storageBucket: 'marcos-moraes.appspot.com',
-        messagingSenderId: '329287441947',
-        appId: '1:329287441947:web:aab841672143339920a2be',
-        measurementId: 'G-51E3Z1LPZS'
+        apiKey: 'AIzaSyBJT-LchTr1eDAHZmtp8IS6rBiPilsqgAo',
+        authDomain: 'marcos-moraes-c3886.firebaseapp.com',
+        databaseURL: 'https://marcos-moraes-c3886-default-rtdb.firebaseio.com',
+        projectId: 'marcos-moraes-c3886',
+        storageBucket: 'marcos-moraes-c3886.appspot.com',
+        messagingSenderId: '721789755860',
+        appId: '1:721789755860:web:afb52328cd3d8804fcb641',
+        measurementId: 'G-JGSGP6D0JK',
       })
   }
 
@@ -28,10 +28,7 @@ const App = () => {
 
   return (
     <Provider store={store}>
-      <StatusBar
-        backgroundColor="#353A3E'"
-        barStyle={'light-content'}
-      />
+      <StatusBar backgroundColor="#353A3E'" barStyle={'light-content'} />
       <PersistGate loading={<ActivityIndicator />} persistor={persistor}>
         <Routes />
       </PersistGate>

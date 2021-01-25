@@ -13,7 +13,8 @@ import { onSubjects } from '../../store/actions/subjects'
 import { onIsAuth } from '../../store/actions/authorization'
 import styles from './styles'
 import Iconn from 'react-native-vector-icons/FontAwesome'
-const ShowPdf = ({ subjects, setSubjects, setIsAuth }) => {
+
+const ShowPdf = ({ subjects, setSubjects, setIsAuth, link }) => {
   const [back, setBack] = useState('#353A3E')
   const [colorText, setColorText] = useState('#353A3E')
 
@@ -47,8 +48,7 @@ const ShowPdf = ({ subjects, setSubjects, setIsAuth }) => {
   }, [])
 
   useEffect(onLoad, [])
-
-  const source = {uri: 'https://firebasestorage.googleapis.com/v0/b/marcos-moraes.appspot.com/o/legislacao.pdf?alt=media&token=8545e5a3-dc04-424e-b685-cb78a65541c3' ,cache:true};
+  const source = {uri: link ,cache:true};
 
   return (
     <View style={{ ...styles.viewmenu, backgroundColor: back }}>
@@ -66,18 +66,6 @@ const ShowPdf = ({ subjects, setSubjects, setIsAuth }) => {
         <ScrollView contentContainerStyle={{ flex: 1 }}>
           <Pdf
             source={source}
-            onLoadComplete={(numberOfPages,filePath)=>{
-                console.log(`number of pages: ${numberOfPages}`);
-            }}
-            onPageChanged={(page,numberOfPages)=>{
-                console.log(`current page: ${page}`);
-            }}
-            onError={(error)=>{
-                console.log(error);
-            }}
-            onPressLink={(uri)=>{
-                console.log(`Link presse: ${uri}`)
-            }}
             style={styles.pdf}/>
         </ScrollView>
       </View>

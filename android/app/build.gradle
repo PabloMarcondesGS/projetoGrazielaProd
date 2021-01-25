@@ -141,8 +141,8 @@ android {
         applicationId "com.marcosmoraes"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 5
-        versionName "1.4"
+        versionCode 11
+        versionName "2.2"
     }
     splits {
         abi {
@@ -198,9 +198,6 @@ android {
 }
 
 dependencies {
-    implementation project(':react-native-vector-icons')
-    implementation project(':@react-native-community_async-storage')
-    implementation project(':react-native-fbsdk')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation 'com.facebook.android:facebook-android-sdk:[4,5)'

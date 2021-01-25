@@ -75,9 +75,9 @@ const Home = ({ subjects, setSubjects, setIsAuth }) => {
   const shareOptions = {
     title: 'Quer passar no Concurso da PM/CE?',
     message:
-      'Quer passar no Concurso da PM/CE? Recomendo o App do Antigão https://play.google.com/store/apps/details?id=br.com.criatees.appdoantigao', // Note that according to the documentation at least one of "message" or "url" fields is required
+      'Quer passar no Concurso da PM/CE? Recomendo o App do Major Marcos Moraes https://play.google.com/store/apps/details?id=com.marcosmoraes&hl=pt_BR', // Note that according to the documentation at least one of "message" or "url" fields is required
     url:
-      'https://play.google.com/store/apps/details?id=br.com.criatees.appdoantigao'
+      'https://play.google.com/store/apps/details?id=com.marcosmoraes&hl=pt_BR'
     // subject:
     //   '',
   }
@@ -189,7 +189,7 @@ const Home = ({ subjects, setSubjects, setIsAuth }) => {
         </TouchableOpacity>
         <TouchableOpacity
           style={{ ...styles.button, marginTop: 14 }}
-          onPress={() => Actions.ShowPdf()}>
+          onPress={() => Actions.ComplementMaterial()}>
           <Iconn name="file" size={30} color="#FFFFFF" />
           <Text style={styles.icontext}>Material</Text>
         </TouchableOpacity>

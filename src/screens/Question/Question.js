@@ -300,8 +300,7 @@ const Question = ({ subject, setSubjects, isQuestion}) => {
                           <Text style={{marginTop: 24, fontSize: 17, color: 'green', width: '100%', textAlign: 'center'}}>Acertou</Text>
                         )
                       }
-                      {/* {console.log(question.explanation)}
-                      {question.explanation && !isQuestion ? (
+                      {question.explanation && isQuestion ? (
                         <>
                           <Text style={{fontSize: 17,color: colorText}}>Explicação:</Text>
                           <ButtonStyled>
@@ -316,7 +315,7 @@ const Question = ({ subject, setSubjects, isQuestion}) => {
                             </Text>
                           </ButtonStyled>
                         </>
-                      ) : <View />} */}
+                      ) : <View />}
                     </>
                   ) : (
                     <View />

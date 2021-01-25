@@ -13,14 +13,18 @@ const Questions = ({ item, colorText, email }) => {
   const [isSolvedIndex, setIsSolvedIndex] = useState()
   useEffect(() => {
     async function getData(){
-      if (item && item.name){
-        const indexAsync = await AsyncStorage.getItem(
-          `@background:marcosmoraesquestionfinished:${item.name}`
-        )
-        setIsSolvedIndex(indexAsync)
-        setIsSolved(true)
-      } else {
-        setIsSolved(false)
+      try{
+        if (item && item.name){
+          const indexAsync = await AsyncStorage.getItem(
+            `@background:marcosmoraesquestionfinished:${item.name}`
+          )
+          setIsSolvedIndex(indexAsync)
+          setIsSolved(true)
+        } else {
+          setIsSolved(false)
+        }
+      } catch (err) {
+        
       }
     }
     getData()
